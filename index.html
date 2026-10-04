@@ -2868,7 +2868,7 @@ function renderCurrentDocument() {
 
 
   rows.forEach(
-    row => {
+  (row, rowIndex) => {
 
       const rowElement =
         document.createElement(
@@ -2986,14 +2986,24 @@ function renderCurrentDocument() {
 
 
       translation.onclick =
-        () => {
+  () => {
 
-          toggleTranslation(
-            rowElement,
-            row.chinese
-          );
+    const context =
+      rows
+        .slice(
+          Math.max(0, rowIndex - 2),
+          rowIndex
+        )
+        .map(item => item.chinese)
+        .filter(Boolean);
 
-        };
+    toggleTranslation(
+      rowElement,
+      row.chinese,
+      context
+    );
+
+  };
 
 
       actions.appendChild(
@@ -4825,7 +4835,8 @@ function renderVocabulary() {
 
 async function toggleTranslation(
   rowElement,
-  sentence
+  sentence,
+  context
 ) {
 
   let box =
@@ -4865,24 +4876,29 @@ async function toggleTranslation(
 
 
   try {
-
-    /* 현재 화면 메모리 */
-
-    if (
-      translationMemory.has(
-        sentence
-      )
-    ) {
-
-      box.textContent =
-        translationMemory.get(
-          sentence
-        );
+// 현재 문장 + 직전 2문장을 하나의 키로 사용
+const translationKey =
+  JSON.stringify({
+    context,
+    sentence
+  });
 
 
-      return;
+/* 현재 화면 메모리 */
 
-    }
+if (
+  translationMemory.has(
+    translationKey
+  )
+) {
+
+  box.textContent =
+    translationMemory.get(
+      translationKey
+    );
+
+  return;
+}
 
 
     /* 서버의 dynamic-api가
@@ -4898,13 +4914,16 @@ async function toggleTranslation(
 
           body: {
 
-            type:
-              "sentence",
+  type:
+    "sentence",
 
-            text:
-              sentence
+  text:
+    sentence,
 
-          }
+  context:
+    context
+
+}
 
         }
       );
@@ -4931,9 +4950,9 @@ async function toggleTranslation(
 
 
     translationMemory.set(
-      sentence,
-      translation
-    );
+  translationKey,
+  translation
+);
 
 
     box.textContent =
