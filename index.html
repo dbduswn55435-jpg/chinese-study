@@ -1,279 +1,764 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>중국어 공부</title>
+<title>중국어 대본 공부</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<!-- PDF 읽기 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
-    body {
-      margin: 0;
-      background: #f7f7f5;
-      color: #222;
-      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-        "Noto Sans KR", sans-serif;
-    }
+<!-- 사진 OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 28px 18px 80px;
-    }
+<style>
 
-    h1 {
-      margin-bottom: 6px;
-      font-size: 30px;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    .subtitle {
-      color: #777;
-      margin-top: 0;
-      margin-bottom: 28px;
-    }
+body {
+  margin: 0;
+  background: #fafaf8;
+  color: #222;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Apple SD Gothic Neo",
+    "Noto Sans KR",
+    sans-serif;
+}
 
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-    }
 
-    textarea {
-      width: 100%;
-      min-height: 150px;
-      resize: vertical;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 15px;
-      font-size: 18px;
-      line-height: 1.7;
-      outline: none;
-    }
+/* =========================
+   상단
+========================= */
 
-    textarea:focus {
-      border-color: #222;
-    }
+header {
+  height: 70px;
+  padding: 0 28px;
 
-    button {
-      width: 100%;
-      border: 0;
-      border-radius: 13px;
-      padding: 14px;
-      margin-top: 12px;
-      font-size: 17px;
-      font-weight: 700;
-      background: #222;
-      color: white;
-      cursor: pointer;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    button:disabled {
-      opacity: 0.5;
-    }
+  background: white;
+  border-bottom: 1px solid #eee;
 
-    .sentence {
-      font-size: 22px;
-      line-height: 2;
-      word-break: break-word;
-    }
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
 
-    .word {
-      display: inline-block;
-      padding: 2px 4px;
-      margin: 1px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+.logo {
+  font-size: 21px;
+  font-weight: 800;
+}
 
-    .word:hover {
-      background: #eee;
-    }
+.upload-buttons {
+  display: flex;
+  gap: 8px;
+}
 
-    .word:active {
-      background: #ddd;
-    }
+.upload-btn {
+  border: 1px solid #ddd;
+  background: white;
 
-    .hint {
-      font-size: 14px;
-      color: #888;
-      margin-top: 10px;
-    }
+  padding: 10px 15px;
+  border-radius: 10px;
 
-    #result {
-      display: none;
-    }
+  font-size: 14px;
+  font-weight: 700;
 
-    .selected-word {
-      font-size: 30px;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
+  cursor: pointer;
+}
 
-    .pinyin {
-      font-size: 19px;
-      color: #777;
-      margin-bottom: 12px;
-    }
+.upload-btn:hover {
+  background: #f5f5f5;
+}
 
-    .meaning {
-      font-size: 20px;
-      margin-bottom: 18px;
-    }
+input[type="file"] {
+  display: none;
+}
 
-    .section {
-      padding-top: 14px;
-      margin-top: 14px;
-      border-top: 1px solid #eee;
-    }
 
-    .section-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: #888;
-      margin-bottom: 7px;
-    }
+/* =========================
+   시작 화면
+========================= */
 
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 24px;
-      color: #777;
-    }
+#startScreen {
+  max-width: 760px;
 
-    .error {
-      color: #c62828;
-      white-space: pre-wrap;
-    }
+  margin: 110px auto;
+  padding: 30px;
 
-    .character {
-      background: #f6f6f6;
-      padding: 10px;
-      border-radius: 10px;
-      margin-top: 7px;
-    }
-  </style>
+  text-align: center;
+}
+
+#startScreen h1 {
+  font-size: 38px;
+  margin-bottom: 12px;
+}
+
+#startScreen p {
+  color: #777;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.big-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.big-upload {
+  padding: 17px 25px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #222;
+  color: white;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.big-upload.secondary {
+  background: #ececea;
+  color: #222;
+}
+
+
+/* =========================
+   진행 상태
+========================= */
+
+#status {
+  display: none;
+
+  position: fixed;
+
+  top: 85px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  padding: 11px 18px;
+
+  background: #222;
+  color: white;
+
+  border-radius: 20px;
+
+  font-size: 14px;
+
+  z-index: 100;
+}
+
+
+/* =========================
+   전체 공부 화면
+========================= */
+
+#studyApp {
+  display: none;
+
+  width: 100%;
+  min-height: calc(100vh - 70px);
+}
+
+.study-layout {
+  display: flex;
+  width: 100%;
+}
+
+
+/* =========================
+   대본
+========================= */
+
+#scriptArea {
+  width: 100%;
+
+  padding:
+    55px
+    clamp(25px, 6vw, 100px)
+    100px;
+
+  transition:
+    width 0.25s ease,
+    padding 0.25s ease;
+}
+
+body.panel-open #scriptArea {
+  width: 75%;
+  padding-left: 45px;
+  padding-right: 45px;
+}
+
+.document-title {
+  font-size: 14px;
+  color: #999;
+
+  margin-bottom: 35px;
+}
+
+#scriptText {
+  max-width: 1100px;
+
+  margin: auto;
+
+  font-size: clamp(21px, 2.1vw, 30px);
+  line-height: 2.05;
+
+  letter-spacing: 0.02em;
+}
+
+.sentence {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.word {
+  display: inline;
+  cursor: pointer;
+
+  border-radius: 5px;
+
+  padding: 2px 2px;
+
+  transition: background 0.15s;
+}
+
+.word:hover {
+  background: #eaeae6;
+}
+
+.word.selected {
+  background: #deded8;
+}
+
+
+/* =========================
+   오른쪽 분석창
+========================= */
+
+#analysisPanel {
+  position: fixed;
+
+  top: 70px;
+  right: 0;
+
+  width: 25%;
+  min-width: 320px;
+
+  height: calc(100vh - 70px);
+
+  background: white;
+
+  border-left: 1px solid #e5e5e5;
+
+  overflow-y: auto;
+
+  padding: 30px 25px 70px;
+
+  transform: translateX(100%);
+
+  transition: transform 0.25s ease;
+
+  z-index: 10;
+}
+
+body.panel-open #analysisPanel {
+  transform: translateX(0);
+}
+
+.close-panel {
+  border: none;
+  background: none;
+
+  font-size: 24px;
+
+  float: right;
+
+  cursor: pointer;
+
+  color: #777;
+}
+
+.word-main {
+  margin-top: 22px;
+  margin-bottom: 26px;
+}
+
+#resultWord {
+  font-size: 38px;
+  font-weight: 800;
+}
+
+#resultPinyin {
+  margin-top: 6px;
+
+  font-size: 21px;
+
+  color: #777;
+}
+
+#resultMeaning {
+  margin-top: 10px;
+
+  font-size: 21px;
+  font-weight: 600;
+
+  line-height: 1.5;
+}
+
+
+/* =========================
+   분석 섹션
+========================= */
+
+.analysis-section {
+  border-top: 1px solid #eee;
+
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.section-title {
+  margin-bottom: 12px;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  color: #999;
+}
+
+
+/* =========================
+   한자 풀이
+========================= */
+
+.character-card {
+  padding: 11px 13px;
+
+  margin-bottom: 8px;
+
+  background: #f6f6f3;
+
+  border-radius: 10px;
+
+  line-height: 1.6;
+}
+
+.character-hanzi {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.character-pinyin {
+  color: #777;
+  margin-left: 5px;
+}
+
+.character-korean {
+  margin-left: 8px;
+}
+
+
+/* =========================
+   관련 표현
+========================= */
+
+.expression-card {
+  padding: 12px 0;
+
+  border-bottom: 1px solid #eee;
+}
+
+.expression-word {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.expression-pinyin {
+  margin-left: 5px;
+  color: #777;
+}
+
+.expression-meaning {
+  margin-top: 5px;
+
+  color: #444;
+
+  line-height: 1.5;
+}
+
+
+/* =========================
+   문법
+========================= */
+
+#grammar {
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+
+/* =========================
+   로딩
+========================= */
+
+#analysisLoading {
+  display: none;
+
+  padding: 50px 0;
+
+  text-align: center;
+
+  color: #888;
+}
+
+#error {
+  color: #c62828;
+  line-height: 1.6;
+}
+
+
+/* =========================
+   모바일
+========================= */
+
+@media (max-width: 760px) {
+
+  header {
+    height: 62px;
+    padding: 0 15px;
+  }
+
+  .logo {
+    font-size: 17px;
+  }
+
+  .upload-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  #startScreen {
+    margin-top: 60px;
+  }
+
+  #startScreen h1 {
+    font-size: 30px;
+  }
+
+  .big-buttons {
+    flex-direction: column;
+  }
+
+  #scriptArea,
+  body.panel-open #scriptArea {
+
+    width: 100%;
+
+    padding:
+      30px
+      20px
+      150px;
+  }
+
+  #scriptText {
+    font-size: 23px;
+    line-height: 2;
+  }
+
+  #analysisPanel {
+
+    top: auto;
+    bottom: 0;
+
+    width: 100%;
+    min-width: 0;
+
+    height: 67vh;
+
+    border-left: none;
+    border-top: 1px solid #ddd;
+
+    border-radius: 22px 22px 0 0;
+
+    transform: translateY(105%);
+
+    padding: 25px 22px 60px;
+  }
+
+  body.panel-open #analysisPanel {
+    transform: translateY(0);
+  }
+
+}
+
+
+/* =========================
+   작은 보조 설명
+========================= */
+
+.helper {
+  font-size: 13px;
+
+  color: #999;
+
+  margin-top: 18px;
+}
+
+</style>
 </head>
+
 
 <body>
 
-<div class="container">
 
-  <h1>🇨🇳 중국어 공부</h1>
+<header>
 
-  <p class="subtitle">
-    중국어 문장을 넣고 단어를 눌러 뜻과 표현을 공부해 보세요.
-  </p>
-
-
-  <div class="card">
-
-    <textarea
-      id="inputText"
-      placeholder="예: 我真的很喜欢这个。"
-    ></textarea>
-
-    <button onclick="makeStudyText()">
-      공부하기
-    </button>
-
+  <div class="logo">
+    中文 공부
   </div>
 
 
-  <div class="card" id="studyCard" style="display:none;">
+  <div class="upload-buttons">
 
-    <div class="sentence" id="studyText"></div>
-
-    <div class="hint">
-      단어를 누르면 AI가 설명해 줍니다.
-    </div>
-
-  </div>
-
-
-  <div class="loading" id="loading">
-    AI가 분석하고 있어요...
-  </div>
+    <label class="upload-btn">
+      PDF
+      <input
+        type="file"
+        id="pdfInput"
+        accept="application/pdf"
+      >
+    </label>
 
 
-  <div class="card" id="result">
-
-    <div class="selected-word" id="resultWord"></div>
-
-    <div class="pinyin" id="resultPinyin"></div>
-
-    <div class="meaning" id="resultMeaning"></div>
-
-
-    <div class="section" id="characterSection">
-
-      <div class="section-title">
-        한자 풀이
-      </div>
-
-      <div id="characters"></div>
-
-    </div>
-
-
-    <div class="section">
-
-      <div class="section-title">
-        문법 · 사용법
-      </div>
-
-      <div id="grammar"></div>
-
-    </div>
-
-
-    <div class="section">
-
-      <div class="section-title">
-        뉘앙스
-      </div>
-
-      <div id="nuance"></div>
-
-    </div>
-
-
-    <div class="section">
-
-      <div class="section-title">
-        관련 표현
-      </div>
-
-      <div id="related"></div>
-
-    </div>
-
-
-    <div class="section">
-
-      <div class="section-title">
-        회화 팁
-      </div>
-
-      <div id="tip"></div>
-
-    </div>
-
-    <div class="error" id="error"></div>
+    <label class="upload-btn">
+      사진
+      <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+      >
+    </label>
 
   </div>
 
+</header>
+
+
+<div id="status">
+  파일을 읽고 있어요...
 </div>
 
 
+<!-- 시작 화면 -->
+
+<section id="startScreen">
+
+  <h1>
+    중국어 대본 공부
+  </h1>
+
+  <p>
+    중국어 PDF나 사진을 올려 주세요.<br>
+    글자를 읽어 대본으로 만든 뒤,
+    단어를 눌러 바로 공부할 수 있어요.
+  </p>
+
+
+  <div class="big-buttons">
+
+    <label class="big-upload">
+
+      PDF 올리기
+
+      <input
+        type="file"
+        id="pdfInputBig"
+        accept="application/pdf"
+      >
+
+    </label>
+
+
+    <label class="big-upload secondary">
+
+      사진 올리기
+
+      <input
+        type="file"
+        id="imageInputBig"
+        accept="image/*"
+      >
+
+    </label>
+
+  </div>
+
+
+  <div class="helper">
+    텍스트 PDF는 바로 읽고,
+    사진은 OCR로 중국어를 인식합니다.
+  </div>
+
+</section>
+
+
+
+<!-- 공부 화면 -->
+
+<main id="studyApp">
+
+  <div class="study-layout">
+
+    <section id="scriptArea">
+
+      <div
+        class="document-title"
+        id="documentTitle"
+      ></div>
+
+      <div id="scriptText"></div>
+
+    </section>
+
+
+    <aside id="analysisPanel">
+
+      <button
+        class="close-panel"
+        onclick="closePanel()"
+      >
+        ×
+      </button>
+
+
+      <div id="analysisLoading">
+        AI가 분석하고 있어요...
+      </div>
+
+
+      <div id="analysisContent">
+
+        <div class="word-main">
+
+          <div id="resultWord"></div>
+
+          <div id="resultPinyin"></div>
+
+          <div id="resultMeaning"></div>
+
+        </div>
+
+
+        <section class="analysis-section">
+
+          <div class="section-title">
+            한자 풀이
+          </div>
+
+          <div id="characters"></div>
+
+        </section>
+
+
+        <section class="analysis-section">
+
+          <div class="section-title">
+            문법 · 어순
+          </div>
+
+          <div id="grammar"></div>
+
+        </section>
+
+
+        <section class="analysis-section">
+
+          <div class="section-title">
+            뉘앙스
+          </div>
+
+          <div id="nuance"></div>
+
+        </section>
+
+
+        <section class="analysis-section">
+
+          <div class="section-title">
+            관련 표현
+          </div>
+
+          <div id="relatedWords"></div>
+
+        </section>
+
+
+        <section class="analysis-section">
+
+          <div class="section-title">
+            유의어
+          </div>
+
+          <div id="synonyms"></div>
+
+        </section>
+
+
+        <section class="analysis-section">
+
+          <div class="section-title">
+            반의어
+          </div>
+
+          <div id="antonyms"></div>
+
+        </section>
+
+
+        <section class="analysis-section">
+
+          <div class="section-title">
+            기억하기
+          </div>
+
+          <div id="studyTip"></div>
+
+        </section>
+
+
+        <div id="error"></div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+</main>
+
+
+
 <script>
+
+/* =========================
+   Supabase 연결
+========================= */
 
 const SUPABASE_URL =
   "https://izdxvlcpaplrtmcinwkz.supabase.co";
@@ -281,33 +766,398 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   "sb_publishable_HZvFWsF9fq4nzmtXy9_Okw_yfIq3RNw";
 
-
-const client = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-
-let currentSentence = "";
+const client =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
 
-function makeStudyText() {
+/* =========================
+   PDF 설정
+========================= */
 
-  const text =
-    document.getElementById("inputText").value.trim();
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-  if (!text) {
-    alert("중국어 문장을 입력해 주세요.");
-    return;
+
+let fullText = "";
+let selectedElement = null;
+
+
+/* =========================
+   파일 선택 연결
+========================= */
+
+document
+  .getElementById("pdfInput")
+  .addEventListener(
+    "change",
+    e => handlePDF(e.target.files[0])
+  );
+
+
+document
+  .getElementById("pdfInputBig")
+  .addEventListener(
+    "change",
+    e => handlePDF(e.target.files[0])
+  );
+
+
+document
+  .getElementById("imageInput")
+  .addEventListener(
+    "change",
+    e => handleImage(e.target.files[0])
+  );
+
+
+document
+  .getElementById("imageInputBig")
+  .addEventListener(
+    "change",
+    e => handleImage(e.target.files[0])
+  );
+
+
+/* =========================
+   상태 표시
+========================= */
+
+function showStatus(message) {
+
+  const box =
+    document.getElementById("status");
+
+  box.textContent = message;
+
+  box.style.display = "block";
+
+}
+
+
+function hideStatus() {
+
+  document.getElementById("status")
+    .style.display = "none";
+
+}
+
+
+/* =========================
+   PDF 읽기
+========================= */
+
+async function handlePDF(file) {
+
+  if (!file) return;
+
+  showStatus("PDF를 읽고 있어요...");
+
+  try {
+
+    const buffer =
+      await file.arrayBuffer();
+
+    const pdf =
+      await pdfjsLib
+        .getDocument({
+          data: buffer
+        })
+        .promise;
+
+
+    let text = "";
+
+
+    for (
+      let pageNumber = 1;
+      pageNumber <= pdf.numPages;
+      pageNumber++
+    ) {
+
+      showStatus(
+        `PDF ${pageNumber}/${pdf.numPages} 페이지 읽는 중...`
+      );
+
+
+      const page =
+        await pdf.getPage(pageNumber);
+
+
+      const content =
+        await page.getTextContent();
+
+
+      const pageText =
+        content.items
+          .map(item => item.str)
+          .join(" ");
+
+
+      text += pageText + "\n";
+
+    }
+
+
+    text = cleanText(text);
+
+
+    if (!containsChinese(text)) {
+
+      alert(
+        "이 PDF에서는 중국어 텍스트를 바로 읽지 못했어요. " +
+        "스캔된 PDF라면 사진으로 올려 주세요."
+      );
+
+      hideStatus();
+
+      return;
+
+    }
+
+
+    openDocument(
+      text,
+      file.name
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "PDF를 읽는 중 오류가 발생했어요."
+    );
+
   }
 
-  currentSentence = text;
 
-  const area =
-    document.getElementById("studyText");
+  hideStatus();
 
-  area.innerHTML = "";
+}
 
+
+/* =========================
+   사진 OCR
+========================= */
+
+async function handleImage(file) {
+
+  if (!file) return;
+
+
+  showStatus(
+    "사진 속 중국어를 읽고 있어요. 잠시 기다려 주세요..."
+  );
+
+
+  try {
+
+    const result =
+      await Tesseract.recognize(
+        file,
+        "chi_sim+eng",
+        {
+          logger: info => {
+
+            if (
+              info.status ===
+              "recognizing text"
+            ) {
+
+              const percent =
+                Math.round(
+                  (info.progress || 0)
+                  * 100
+                );
+
+              showStatus(
+                `글자 인식 중... ${percent}%`
+              );
+
+            }
+
+          }
+        }
+      );
+
+
+    const text =
+      cleanText(
+        result.data.text
+      );
+
+
+    if (!text) {
+
+      alert(
+        "사진에서 글자를 찾지 못했어요."
+      );
+
+      hideStatus();
+
+      return;
+
+    }
+
+
+    openDocument(
+      text,
+      file.name
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "사진 글자 인식 중 오류가 발생했어요."
+    );
+
+  }
+
+
+  hideStatus();
+
+}
+
+
+/* =========================
+   텍스트 정리
+========================= */
+
+function cleanText(text) {
+
+  return text
+    .replace(/\r/g, "")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+}
+
+
+function containsChinese(text) {
+
+  return /[\u3400-\u9FFF]/.test(text);
+
+}
+
+
+/* =========================
+   문서 열기
+========================= */
+
+function openDocument(
+  text,
+  fileName
+) {
+
+  fullText = text;
+
+
+  document.getElementById(
+    "startScreen"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "studyApp"
+  ).style.display = "block";
+
+
+  document.getElementById(
+    "documentTitle"
+  ).textContent = fileName || "";
+
+
+  renderScript(text);
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* =========================
+   문장 분리
+========================= */
+
+function splitSentences(text) {
+
+  const matches =
+    text.match(
+      /[^。！？!?\n]+[。！？!?]?|\n+/g
+    );
+
+
+  if (!matches) {
+    return [text];
+  }
+
+
+  return matches
+    .map(item => item.trim())
+    .filter(Boolean);
+
+}
+
+
+/* =========================
+   학습용 단어 분리
+
+   Intl.Segmenter만 쓰면
+   很喜欢 같은 표현이
+   한 덩어리가 될 수 있어서
+
+   자주 쓰는 기능어를
+   추가로 분리한다.
+========================= */
+
+const functionWords = new Set([
+  "很",
+  "太",
+  "真",
+  "更",
+  "最",
+  "也",
+  "都",
+  "还",
+  "就",
+  "才",
+  "又",
+  "再",
+  "不",
+  "没",
+  "别",
+  "的",
+  "了",
+  "着",
+  "过",
+  "吗",
+  "呢",
+  "吧",
+  "啊",
+  "呀",
+  "我",
+  "你",
+  "他",
+  "她",
+  "它",
+  "我们",
+  "你们",
+  "他们"
+]);
+
+
+function segmentChinese(text) {
 
   if (
     typeof Intl !== "undefined" &&
@@ -317,111 +1167,378 @@ function makeStudyText() {
     const segmenter =
       new Intl.Segmenter(
         "zh",
-        { granularity: "word" }
+        {
+          granularity: "word"
+        }
       );
 
-    const segments =
-      segmenter.segment(text);
+
+    const raw =
+      [...segmenter.segment(text)];
 
 
-    for (const item of segments) {
+    const output = [];
 
-      const part = item.segment;
+
+    for (const item of raw) {
+
+      const token =
+        item.segment;
+
 
       if (
-        item.isWordLike &&
-        /[\u3400-\u9FFF]/.test(part)
+        !item.isWordLike ||
+        !containsChinese(token)
       ) {
 
-        const span =
-          document.createElement("span");
+        output.push({
+          text: token,
+          clickable: false
+        });
 
-        span.className = "word";
+        continue;
 
-        span.textContent = part;
+      }
 
-        span.onclick = () =>
-          analyzeWord(part);
 
-        area.appendChild(span);
+      const divided =
+        splitLearningToken(token);
 
-      } else {
 
-        area.appendChild(
-          document.createTextNode(part)
-        );
+      divided.forEach(part => {
+
+        output.push({
+          text: part,
+          clickable:
+            containsChinese(part)
+        });
+
+      });
+
+    }
+
+
+    return output;
+
+  }
+
+
+  return [...text].map(char => ({
+    text: char,
+    clickable:
+      containsChinese(char)
+  }));
+
+}
+
+
+/* =========================
+   很喜欢 → 很 / 喜欢
+   我很喜欢 → 我 / 很 / 喜欢
+========================= */
+
+function splitLearningToken(token) {
+
+  if (functionWords.has(token)) {
+    return [token];
+  }
+
+
+  const result = [];
+
+  let rest = token;
+
+
+  const orderedWords =
+    [...functionWords]
+      .sort(
+        (a, b) =>
+          b.length - a.length
+      );
+
+
+  while (rest.length) {
+
+    let matched = false;
+
+
+    for (const word of orderedWords) {
+
+      if (
+        rest.startsWith(word) &&
+        rest !== word
+      ) {
+
+        result.push(word);
+
+        rest =
+          rest.slice(
+            word.length
+          );
+
+        matched = true;
+
+        break;
 
       }
 
     }
 
-  } else {
 
-    for (const char of text) {
+    if (!matched) {
 
-      if (/[\u3400-\u9FFF]/.test(char)) {
+      result.push(rest);
 
-        const span =
-          document.createElement("span");
-
-        span.className = "word";
-
-        span.textContent = char;
-
-        span.onclick = () =>
-          analyzeWord(char);
-
-        area.appendChild(span);
-
-      } else {
-
-        area.appendChild(
-          document.createTextNode(char)
-        );
-
-      }
+      break;
 
     }
 
   }
 
 
-  document.getElementById("studyCard")
-    .style.display = "block";
-
-  document.getElementById("result")
-    .style.display = "none";
+  return result;
 
 }
 
 
-async function analyzeWord(word) {
+/* =========================
+   대본 표시
+========================= */
+
+function renderScript(text) {
+
+  const container =
+    document.getElementById(
+      "scriptText"
+    );
+
+
+  container.innerHTML = "";
+
+
+  const sentences =
+    splitSentences(text);
+
+
+  sentences.forEach(sentence => {
+
+    const sentenceElement =
+      document.createElement(
+        "div"
+      );
+
+
+    sentenceElement.className =
+      "sentence";
+
+
+    const tokens =
+      segmentChinese(sentence);
+
+
+    tokens.forEach(token => {
+
+      if (!token.clickable) {
+
+        sentenceElement
+          .appendChild(
+            document.createTextNode(
+              token.text
+            )
+          );
+
+        return;
+
+      }
+
+
+      const span =
+        document.createElement(
+          "span"
+        );
+
+
+      span.className = "word";
+
+      span.textContent =
+        token.text;
+
+
+      span.addEventListener(
+        "click",
+        () =>
+          selectWord(
+            token.text,
+            sentence,
+            span
+          )
+      );
+
+
+      /* PC에서는 마우스를 올려도
+         패널을 열 수 있다. */
+
+      span.addEventListener(
+        "mouseenter",
+        () => {
+
+          if (
+            window.matchMedia(
+              "(hover:hover)"
+            ).matches
+          ) {
+
+            selectWord(
+              token.text,
+              sentence,
+              span
+            );
+
+          }
+
+        }
+      );
+
+
+      sentenceElement
+        .appendChild(span);
+
+    });
+
+
+    container.appendChild(
+      sentenceElement
+    );
+
+  });
+
+}
+
+
+/* =========================
+   단어 선택
+========================= */
+
+async function selectWord(
+  word,
+  sentence,
+  element
+) {
+
+  if (
+    selectedElement === element &&
+    document.body.classList
+      .contains("panel-open")
+  ) {
+
+    return;
+
+  }
+
+
+  if (selectedElement) {
+
+    selectedElement
+      .classList
+      .remove("selected");
+
+  }
+
+
+  selectedElement = element;
+
+  element.classList.add(
+    "selected"
+  );
+
+
+  document.body
+    .classList
+    .add("panel-open");
+
+
+  await analyzeWord(
+    word,
+    sentence
+  );
+
+}
+
+
+/* =========================
+   패널 닫기
+========================= */
+
+function closePanel() {
+
+  document.body
+    .classList
+    .remove("panel-open");
+
+
+  if (selectedElement) {
+
+    selectedElement
+      .classList
+      .remove("selected");
+
+  }
+
+
+  selectedElement = null;
+
+}
+
+
+/* =========================
+   AI 분석
+========================= */
+
+async function analyzeWord(
+  word,
+  sentence
+) {
 
   const loading =
-    document.getElementById("loading");
+    document.getElementById(
+      "analysisLoading"
+    );
 
-  const resultBox =
-    document.getElementById("result");
+
+  const content =
+    document.getElementById(
+      "analysisContent"
+    );
+
 
   const errorBox =
-    document.getElementById("error");
+    document.getElementById(
+      "error"
+    );
 
 
-  loading.style.display = "block";
-  resultBox.style.display = "none";
+  loading.style.display =
+    "block";
+
+  content.style.display =
+    "none";
+
   errorBox.textContent = "";
 
 
   try {
 
-    const { data, error } =
+    const {
+      data,
+      error
+    } =
       await client.functions.invoke(
         "dynamic-api",
         {
           body: {
             text: word,
             type: "word",
-            context: currentSentence
+            context: sentence
           }
         }
       );
@@ -432,161 +1549,358 @@ async function analyzeWord(word) {
     }
 
 
-    showResult(data);
+    renderAnalysis(data);
 
 
   } catch (error) {
 
     console.error(error);
 
-    resultBox.style.display = "block";
+    content.style.display =
+      "block";
+
 
     errorBox.textContent =
       "분석 중 오류가 발생했어요.\n" +
-      (error.message || String(error));
-
-  } finally {
-
-    loading.style.display = "none";
+      (
+        error.message ||
+        String(error)
+      );
 
   }
+
+
+  loading.style.display =
+    "none";
 
 }
 
 
-function showResult(data) {
+/* =========================
+   결과 표시
+========================= */
 
-  const resultBox =
-    document.getElementById("result");
+function renderAnalysis(data) {
 
-
-  document.getElementById("resultWord")
-    .textContent =
-      data.word || "";
-
-
-  document.getElementById("resultPinyin")
-    .textContent =
-      data.pinyin || "";
+  const content =
+    document.getElementById(
+      "analysisContent"
+    );
 
 
-  document.getElementById("resultMeaning")
-    .textContent =
-      data.meaning || "";
+  content.style.display =
+    "block";
 
 
-  const characterBox =
-    document.getElementById("characters");
+  setText(
+    "resultWord",
+    data.word
+  );
 
-  characterBox.innerHTML = "";
+
+  setText(
+    "resultPinyin",
+    data.pinyin
+  );
 
 
-  if (Array.isArray(data.characters)) {
+  setText(
+    "resultMeaning",
+    data.meaning
+  );
 
-    data.characters.forEach(item => {
 
-      const div =
-        document.createElement("div");
+  renderCharacters(
+    data.characters || []
+  );
 
-      div.className = "character";
 
-      div.textContent =
-        `${item.character || ""}  ${
-          item.pinyin || ""
-        } — ${
-          item.meaning || ""
-        }`;
+  setText(
+    "grammar",
+    data.grammar || "—"
+  );
 
-      characterBox.appendChild(div);
 
-    });
+  setText(
+    "nuance",
+    data.nuance || "—"
+  );
+
+
+  renderExpressions(
+    "relatedWords",
+    data.related_words || []
+  );
+
+
+  renderExpressions(
+    "synonyms",
+    data.synonyms || []
+  );
+
+
+  renderExpressions(
+    "antonyms",
+    data.antonyms || []
+  );
+
+
+  setText(
+    "studyTip",
+    data.study_tip || "—"
+  );
+
+}
+
+
+/* =========================
+   한자 풀이 표시
+========================= */
+
+function renderCharacters(items) {
+
+  const box =
+    document.getElementById(
+      "characters"
+    );
+
+
+  box.innerHTML = "";
+
+
+  if (!items.length) {
+
+    box.textContent = "—";
+
+    return;
 
   }
 
 
-  document.getElementById("grammar")
-    .textContent =
-      formatValue(
-        data.grammar ||
-        data.usage
+  items.forEach(item => {
+
+    const card =
+      document.createElement(
+        "div"
       );
 
 
-  document.getElementById("nuance")
-    .textContent =
-      formatValue(data.nuance);
+    card.className =
+      "character-card";
 
 
-  document.getElementById("related")
-    .textContent =
-      formatValue(
-        data.related ||
-        data.related_words ||
-        data.synonyms
+    const hanzi =
+      document.createElement(
+        "span"
       );
 
 
-  document.getElementById("tip")
-    .textContent =
-      formatValue(
-        data.tip ||
-        data.study_tip ||
-        data.conversation_tip
+    hanzi.className =
+      "character-hanzi";
+
+    hanzi.textContent =
+      item.character || "";
+
+
+    const pinyin =
+      document.createElement(
+        "span"
       );
 
 
-  resultBox.style.display = "block";
+    pinyin.className =
+      "character-pinyin";
 
-  resultBox.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
+    pinyin.textContent =
+      item.pinyin || "";
+
+
+    const korean =
+      document.createElement(
+        "span"
+      );
+
+
+    korean.className =
+      "character-korean";
+
+
+    /*
+      새 Edge Function에서는
+      korean_hanja 값을 받는다.
+
+      아직 함수를 수정하기 전에는
+      기존 meaning을 대신 표시한다.
+    */
+
+    korean.textContent =
+      item.korean_hanja ||
+      item.korean_reading ||
+      item.meaning ||
+      "";
+
+
+    card.appendChild(hanzi);
+    card.appendChild(pinyin);
+    card.appendChild(korean);
+
+
+    box.appendChild(card);
+
   });
 
 }
 
 
-function formatValue(value) {
+/* =========================
+   관련 표현을
+   하나씩 별도 표시
+========================= */
 
-  if (!value) {
-    return "—";
-  }
+function renderExpressions(
+  elementId,
+  items
+) {
 
-  if (Array.isArray(value)) {
-
-    return value
-      .map(item => {
-
-        if (
-          typeof item === "object"
-        ) {
-
-          return Object.values(item)
-            .filter(Boolean)
-            .join(" · ");
-
-        }
-
-        return String(item);
-
-      })
-      .join("\n");
-
-  }
+  const box =
+    document.getElementById(
+      elementId
+    );
 
 
-  if (typeof value === "object") {
+  box.innerHTML = "";
 
-    return Object.entries(value)
-      .map(
-        ([key, val]) =>
-          `${key}: ${val}`
-      )
-      .join("\n");
+
+  if (!Array.isArray(items) ||
+      !items.length) {
+
+    box.textContent = "—";
+
+    return;
 
   }
 
 
-  return String(value);
+  items.forEach(item => {
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+
+    card.className =
+      "expression-card";
+
+
+    if (
+      typeof item === "string"
+    ) {
+
+      card.textContent = item;
+
+      box.appendChild(card);
+
+      return;
+
+    }
+
+
+    const firstLine =
+      document.createElement(
+        "div"
+      );
+
+
+    const word =
+      document.createElement(
+        "span"
+      );
+
+
+    word.className =
+      "expression-word";
+
+    word.textContent =
+      item.word || "";
+
+
+    const pinyin =
+      document.createElement(
+        "span"
+      );
+
+
+    pinyin.className =
+      "expression-pinyin";
+
+    pinyin.textContent =
+      item.pinyin || "";
+
+
+    firstLine.appendChild(word);
+    firstLine.appendChild(pinyin);
+
+
+    const meaning =
+      document.createElement(
+        "div"
+      );
+
+
+    meaning.className =
+      "expression-meaning";
+
+
+    let description =
+      item.meaning || "";
+
+
+    if (item.difference) {
+
+      description +=
+        (
+          description
+            ? "\n"
+            : ""
+        ) +
+        item.difference;
+
+    }
+
+
+    meaning.textContent =
+      description;
+
+
+    card.appendChild(
+      firstLine
+    );
+
+    card.appendChild(
+      meaning
+    );
+
+
+    box.appendChild(card);
+
+  });
+
+}
+
+
+/* =========================
+   안전하게 글자 넣기
+========================= */
+
+function setText(
+  id,
+  value
+) {
+
+  document.getElementById(id)
+    .textContent =
+      value || "—";
 
 }
 
