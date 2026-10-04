@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>중국어 공부</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f7f7f5;
+      color: #222;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+        "Noto Sans KR", sans-serif;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 28px 18px 80px;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      color: #777;
+      margin-top: 0;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 18px;
+      line-height: 1.7;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #222;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 13px;
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      background: #222;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+    }
+
+    .sentence {
+      font-size: 22px;
+      line-height: 2;
+      word-break: break-word;
+    }
+
+    .word {
+      display: inline-block;
+      padding: 2px 4px;
+      margin: 1px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .word:hover {
+      background: #eee;
+    }
+
+    .word:active {
+      background: #ddd;
+    }
+
+    .hint {
+      font-size: 14px;
+      color: #888;
+      margin-top: 10px;
+    }
+
+    #result {
+      display: none;
+    }
+
+    .selected-word {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .pinyin {
+      font-size: 19px;
+      color: #777;
+      margin-bottom: 12px;
+    }
+
+    .meaning {
+      font-size: 20px;
+      margin-bottom: 18px;
+    }
+
+    .section {
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: 1px solid #eee;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #888;
+      margin-bottom: 7px;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 24px;
+      color: #777;
+    }
+
+    .error {
+      color: #c62828;
+      white-space: pre-wrap;
+    }
+
+    .character {
+      background: #f6f6f6;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 7px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>🇨🇳 중국어 공부</h1>
+
+  <p class="subtitle">
+    중국어 문장을 넣고 단어를 눌러 뜻과 표현을 공부해 보세요.
+  </p>
+
+
+  <div class="card">
+
+    <textarea
+      id="inputText"
+      placeholder="예: 我真的很喜欢这个。"
+    ></textarea>
+
+    <button onclick="makeStudyText()">
+      공부하기
+    </button>
+
+  </div>
+
+
+  <div class="card" id="studyCard" style="display:none;">
+
+    <div class="sentence" id="studyText"></div>
+
+    <div class="hint">
+      단어를 누르면 AI가 설명해 줍니다.
+    </div>
+
+  </div>
+
+
+  <div class="loading" id="loading">
+    AI가 분석하고 있어요...
+  </div>
+
+
+  <div class="card" id="result">
+
+    <div class="selected-word" id="resultWord"></div>
+
+    <div class="pinyin" id="resultPinyin"></div>
+
+    <div class="meaning" id="resultMeaning"></div>
+
+
+    <div class="section" id="characterSection">
+
+      <div class="section-title">
+        한자 풀이
+      </div>
+
+      <div id="characters"></div>
+
+    </div>
+
+
+    <div class="section">
+
+      <div class="section-title">
+        문법 · 사용법
+      </div>
+
+      <div id="grammar"></div>
+
+    </div>
+
+
+    <div class="section">
+
+      <div class="section-title">
+        뉘앙스
+      </div>
+
+      <div id="nuance"></div>
+
+    </div>
+
+
+    <div class="section">
+
+      <div class="section-title">
+        관련 표현
+      </div>
+
+      <div id="related"></div>
+
+    </div>
+
+
+    <div class="section">
+
+      <div class="section-title">
+        회화 팁
+      </div>
+
+      <div id="tip"></div>
+
+    </div>
+
+    <div class="error" id="error"></div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+  "https://izdxvlcpaplrtmcinwkz.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_HZvFWsF9fq4nzmtXy9_Okw_yfIq3RNw";
+
+
+const client = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+let currentSentence = "";
+
+
+function makeStudyText() {
+
+  const text =
+    document.getElementById("inputText").value.trim();
+
+  if (!text) {
+    alert("중국어 문장을 입력해 주세요.");
+    return;
+  }
+
+  currentSentence = text;
+
+  const area =
+    document.getElementById("studyText");
+
+  area.innerHTML = "";
+
+
+  if (
+    typeof Intl !== "undefined" &&
+    Intl.Segmenter
+  ) {
+
+    const segmenter =
+      new Intl.Segmenter(
+        "zh",
+        { granularity: "word" }
+      );
+
+    const segments =
+      segmenter.segment(text);
+
+
+    for (const item of segments) {
+
+      const part = item.segment;
+
+      if (
+        item.isWordLike &&
+        /[\u3400-\u9FFF]/.test(part)
+      ) {
+
+        const span =
+          document.createElement("span");
+
+        span.className = "word";
+
+        span.textContent = part;
+
+        span.onclick = () =>
+          analyzeWord(part);
+
+        area.appendChild(span);
+
+      } else {
+
+        area.appendChild(
+          document.createTextNode(part)
+        );
+
+      }
+
+    }
+
+  } else {
+
+    for (const char of text) {
+
+      if (/[\u3400-\u9FFF]/.test(char)) {
+
+        const span =
+          document.createElement("span");
+
+        span.className = "word";
+
+        span.textContent = char;
+
+        span.onclick = () =>
+          analyzeWord(char);
+
+        area.appendChild(span);
+
+      } else {
+
+        area.appendChild(
+          document.createTextNode(char)
+        );
+
+      }
+
+    }
+
+  }
+
+
+  document.getElementById("studyCard")
+    .style.display = "block";
+
+  document.getElementById("result")
+    .style.display = "none";
+
+}
+
+
+async function analyzeWord(word) {
+
+  const loading =
+    document.getElementById("loading");
+
+  const resultBox =
+    document.getElementById("result");
+
+  const errorBox =
+    document.getElementById("error");
+
+
+  loading.style.display = "block";
+  resultBox.style.display = "none";
+  errorBox.textContent = "";
+
+
+  try {
+
+    const { data, error } =
+      await client.functions.invoke(
+        "dynamic-api",
+        {
+          body: {
+            text: word,
+            type: "word",
+            context: currentSentence
+          }
+        }
+      );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    showResult(data);
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    resultBox.style.display = "block";
+
+    errorBox.textContent =
+      "분석 중 오류가 발생했어요.\n" +
+      (error.message || String(error));
+
+  } finally {
+
+    loading.style.display = "none";
+
+  }
+
+}
+
+
+function showResult(data) {
+
+  const resultBox =
+    document.getElementById("result");
+
+
+  document.getElementById("resultWord")
+    .textContent =
+      data.word || "";
+
+
+  document.getElementById("resultPinyin")
+    .textContent =
+      data.pinyin || "";
+
+
+  document.getElementById("resultMeaning")
+    .textContent =
+      data.meaning || "";
+
+
+  const characterBox =
+    document.getElementById("characters");
+
+  characterBox.innerHTML = "";
+
+
+  if (Array.isArray(data.characters)) {
+
+    data.characters.forEach(item => {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "character";
+
+      div.textContent =
+        `${item.character || ""}  ${
+          item.pinyin || ""
+        } — ${
+          item.meaning || ""
+        }`;
+
+      characterBox.appendChild(div);
+
+    });
+
+  }
+
+
+  document.getElementById("grammar")
+    .textContent =
+      formatValue(
+        data.grammar ||
+        data.usage
+      );
+
+
+  document.getElementById("nuance")
+    .textContent =
+      formatValue(data.nuance);
+
+
+  document.getElementById("related")
+    .textContent =
+      formatValue(
+        data.related ||
+        data.related_words ||
+        data.synonyms
+      );
+
+
+  document.getElementById("tip")
+    .textContent =
+      formatValue(
+        data.tip ||
+        data.study_tip ||
+        data.conversation_tip
+      );
+
+
+  resultBox.style.display = "block";
+
+  resultBox.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+}
+
+
+function formatValue(value) {
+
+  if (!value) {
+    return "—";
+  }
+
+  if (Array.isArray(value)) {
+
+    return value
+      .map(item => {
+
+        if (
+          typeof item === "object"
+        ) {
+
+          return Object.values(item)
+            .filter(Boolean)
+            .join(" · ");
+
+        }
+
+        return String(item);
+
+      })
+      .join("\n");
+
+  }
+
+
+  if (typeof value === "object") {
+
+    return Object.entries(value)
+      .map(
+        ([key, val]) =>
+          `${key}: ${val}`
+      )
+      .join("\n");
+
+  }
+
+
+  return String(value);
+
+}
+
+</script>
+
+</body>
+</html>
