@@ -2706,96 +2706,55 @@ function hasChinese(
 
 
 
-function buildChineseRows(
-  lines
-) {
-
+function buildChineseRows(lines) {
   const rows = [];
+  let pendingTime = "";
 
-  let currentTime =
-    "";
+  for (const original of lines) {
+    let line = String(original || "").trim();
 
+    if (!line) continue;
 
-  for (
-    const original
-    of lines
-  ) {
-
-    const line =
-      String(
-        original || ""
-      )
-        .trim();
-
-
-    if (!line) {
-      continue;
-    }
-
-
-    const time =
-      findTime(
-        line
-      );
-
-
+    // 시간이 있으면 기억해 둠
+    const time = findTime(line);
     if (time) {
-
-      currentTime =
-        time;
-
+      pendingTime = time;
     }
 
+    // 시간 표시는 중국어 문장에서 제거
+    line = line
+      .replace(/\d{1,2}:\d{2}/g, "")
+      .trim();
 
-    /* 병음/영어/숫자만 있는 줄은
-       대본으로 저장하지 않음 */
-    if (
-      !hasChinese(
-        line
-      )
-    ) {
-
+    // 중국어가 없는 줄은 대본으로 만들지 않음
+    if (!hasChinese(line)) {
       continue;
-
     }
 
+    // OCR/PDF 때문에 한자 사이에 생긴 불필요한 공백 제거
+    // 예: 我 平 时 不 怎 么 → 我平时不怎么
+    line = line.replace(
+      /([\u3400-\u9FFF])\s+(?=[\u3400-\u9FFF])/g,
+      "$1"
+    );
 
-    let chinese =
-      line
-        .replace(
-          /\b\d{1,2}:\d{2}\b/g,
-          ""
-        )
-        .trim();
+    // 앞뒤 불필요한 공백 정리
+    line = line
+      .replace(/\s+/g, " ")
+      .trim();
 
-
-    if (
-      !chinese
-    ) {
-
-      continue;
-
-    }
-
+    if (!line) continue;
 
     rows.push({
-
-      time:
-        currentTime || "",
-
-      chinese
-
+      time: pendingTime || "",
+      chinese: line
     });
 
-
-    currentTime =
-      "";
-
+    // 시간은 바로 다음 중국어 문장에만 사용
+    pendingTime = "";
   }
 
-
   return rows;
-
 }
 
 
