@@ -16,7 +16,6 @@
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
-
 * {
   box-sizing: border-box;
 }
@@ -33,22 +32,15 @@ body {
     sans-serif;
 }
 
-
-/* =========================
-   상단
-========================= */
-
+/* 상단 */
 header {
   height: 70px;
   padding: 0 28px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   background: white;
   border-bottom: 1px solid #eee;
-
   position: sticky;
   top: 0;
   z-index: 20;
@@ -67,35 +59,22 @@ header {
 .upload-btn {
   border: 1px solid #ddd;
   background: white;
-
   padding: 10px 15px;
   border-radius: 10px;
-
   font-size: 14px;
   font-weight: 700;
-
   cursor: pointer;
-}
-
-.upload-btn:hover {
-  background: #f5f5f5;
 }
 
 input[type="file"] {
   display: none;
 }
 
-
-/* =========================
-   시작 화면
-========================= */
-
+/* 시작 화면 */
 #startScreen {
   max-width: 760px;
-
   margin: 110px auto;
   padding: 30px;
-
   text-align: center;
 }
 
@@ -118,16 +97,12 @@ input[type="file"] {
 
 .big-upload {
   padding: 17px 25px;
-
   border: none;
   border-radius: 14px;
-
   background: #222;
   color: white;
-
   font-size: 17px;
   font-weight: 700;
-
   cursor: pointer;
 }
 
@@ -136,41 +111,30 @@ input[type="file"] {
   color: #222;
 }
 
+.helper {
+  font-size: 13px;
+  color: #999;
+  margin-top: 18px;
+}
 
-/* =========================
-   진행 상태
-========================= */
-
+/* 상태 */
 #status {
   display: none;
-
   position: fixed;
-
   top: 85px;
   left: 50%;
-
   transform: translateX(-50%);
-
   padding: 11px 18px;
-
   background: #222;
   color: white;
-
   border-radius: 20px;
-
   font-size: 14px;
-
   z-index: 100;
 }
 
-
-/* =========================
-   전체 공부 화면
-========================= */
-
+/* 공부 화면 */
 #studyApp {
   display: none;
-
   width: 100%;
   min-height: calc(100vh - 70px);
 }
@@ -180,22 +144,11 @@ input[type="file"] {
   width: 100%;
 }
 
-
-/* =========================
-   대본
-========================= */
-
+/* 대본 */
 #scriptArea {
   width: 100%;
-
-  padding:
-    55px
-    clamp(25px, 6vw, 100px)
-    100px;
-
-  transition:
-    width 0.25s ease,
-    padding 0.25s ease;
+  padding: 55px clamp(25px, 6vw, 100px) 100px;
+  transition: width 0.25s ease, padding 0.25s ease;
 }
 
 body.panel-open #scriptArea {
@@ -207,34 +160,28 @@ body.panel-open #scriptArea {
 .document-title {
   font-size: 14px;
   color: #999;
-
   margin-bottom: 35px;
 }
 
 #scriptText {
   max-width: 1100px;
-
   margin: auto;
-
   font-size: clamp(21px, 2.1vw, 30px);
   line-height: 2.05;
-
   letter-spacing: 0.02em;
 }
 
 .sentence {
   display: block;
   margin-bottom: 18px;
+  white-space: pre-wrap;
 }
 
 .word {
   display: inline;
   cursor: pointer;
-
   border-radius: 5px;
-
-  padding: 2px 2px;
-
+  padding: 2px;
   transition: background 0.15s;
 }
 
@@ -246,34 +193,20 @@ body.panel-open #scriptArea {
   background: #deded8;
 }
 
-
-/* =========================
-   오른쪽 분석창
-========================= */
-
+/* 분석 패널 */
 #analysisPanel {
   position: fixed;
-
   top: 70px;
   right: 0;
-
   width: 25%;
   min-width: 320px;
-
   height: calc(100vh - 70px);
-
   background: white;
-
   border-left: 1px solid #e5e5e5;
-
   overflow-y: auto;
-
   padding: 30px 25px 70px;
-
   transform: translateX(100%);
-
   transition: transform 0.25s ease;
-
   z-index: 10;
 }
 
@@ -284,13 +217,9 @@ body.panel-open #analysisPanel {
 .close-panel {
   border: none;
   background: none;
-
   font-size: 24px;
-
   float: right;
-
   cursor: pointer;
-
   color: #777;
 }
 
@@ -306,56 +235,36 @@ body.panel-open #analysisPanel {
 
 #resultPinyin {
   margin-top: 6px;
-
   font-size: 21px;
-
   color: #777;
 }
 
 #resultMeaning {
   margin-top: 10px;
-
   font-size: 21px;
   font-weight: 600;
-
   line-height: 1.5;
 }
 
-
-/* =========================
-   분석 섹션
-========================= */
-
 .analysis-section {
   border-top: 1px solid #eee;
-
   padding-top: 20px;
   margin-top: 20px;
 }
 
 .section-title {
   margin-bottom: 12px;
-
   font-size: 14px;
   font-weight: 800;
-
   color: #999;
 }
 
-
-/* =========================
-   한자 풀이
-========================= */
-
+/* 한자 */
 .character-card {
   padding: 11px 13px;
-
   margin-bottom: 8px;
-
   background: #f6f6f3;
-
   border-radius: 10px;
-
   line-height: 1.6;
 }
 
@@ -373,14 +282,9 @@ body.panel-open #analysisPanel {
   margin-left: 8px;
 }
 
-
-/* =========================
-   관련 표현
-========================= */
-
+/* 관련 표현 */
 .expression-card {
   padding: 12px 0;
-
   border-bottom: 1px solid #eee;
 }
 
@@ -396,49 +300,31 @@ body.panel-open #analysisPanel {
 
 .expression-meaning {
   margin-top: 5px;
-
   color: #444;
-
-  line-height: 1.5;
+  line-height: 1.55;
+  white-space: pre-line;
 }
-
-
-/* =========================
-   문법
-========================= */
 
 #grammar {
   line-height: 1.65;
   white-space: pre-line;
 }
 
-
-/* =========================
-   로딩
-========================= */
-
 #analysisLoading {
   display: none;
-
   padding: 50px 0;
-
   text-align: center;
-
   color: #888;
 }
 
 #error {
   color: #c62828;
   line-height: 1.6;
+  white-space: pre-line;
 }
 
-
-/* =========================
-   모바일
-========================= */
-
+/* 모바일 */
 @media (max-width: 760px) {
-
   header {
     height: 62px;
     padding: 0 15px;
@@ -467,13 +353,8 @@ body.panel-open #analysisPanel {
 
   #scriptArea,
   body.panel-open #scriptArea {
-
     width: 100%;
-
-    padding:
-      30px
-      20px
-      150px;
+    padding: 30px 20px 150px;
   }
 
   #scriptText {
@@ -482,96 +363,49 @@ body.panel-open #analysisPanel {
   }
 
   #analysisPanel {
-
     top: auto;
     bottom: 0;
-
     width: 100%;
     min-width: 0;
-
     height: 67vh;
-
     border-left: none;
     border-top: 1px solid #ddd;
-
     border-radius: 22px 22px 0 0;
-
     transform: translateY(105%);
-
     padding: 25px 22px 60px;
   }
 
   body.panel-open #analysisPanel {
     transform: translateY(0);
   }
-
 }
-
-
-/* =========================
-   작은 보조 설명
-========================= */
-
-.helper {
-  font-size: 13px;
-
-  color: #999;
-
-  margin-top: 18px;
-}
-
 </style>
 </head>
 
-
 <body>
 
-
 <header>
-
-  <div class="logo">
-    中文 공부
-  </div>
-
+  <div class="logo">中文 공부</div>
 
   <div class="upload-buttons">
-
     <label class="upload-btn">
       PDF
-      <input
-        type="file"
-        id="pdfInput"
-        accept="application/pdf"
-      >
+      <input type="file" id="pdfInput" accept="application/pdf">
     </label>
-
 
     <label class="upload-btn">
       사진
-      <input
-        type="file"
-        id="imageInput"
-        accept="image/*"
-      >
+      <input type="file" id="imageInput" accept="image/*">
     </label>
-
   </div>
-
 </header>
-
 
 <div id="status">
   파일을 읽고 있어요...
 </div>
 
-
-<!-- 시작 화면 -->
-
 <section id="startScreen">
-
-  <h1>
-    중국어 대본 공부
-  </h1>
+  <h1>중국어 대본 공부</h1>
 
   <p>
     중국어 PDF나 사진을 올려 주세요.<br>
@@ -579,185 +413,94 @@ body.panel-open #analysisPanel {
     단어를 눌러 바로 공부할 수 있어요.
   </p>
 
-
   <div class="big-buttons">
-
     <label class="big-upload">
-
       PDF 올리기
-
-      <input
-        type="file"
-        id="pdfInputBig"
-        accept="application/pdf"
-      >
-
+      <input type="file" id="pdfInputBig" accept="application/pdf">
     </label>
-
 
     <label class="big-upload secondary">
-
       사진 올리기
-
-      <input
-        type="file"
-        id="imageInputBig"
-        accept="image/*"
-      >
-
+      <input type="file" id="imageInputBig" accept="image/*">
     </label>
-
   </div>
-
 
   <div class="helper">
-    텍스트 PDF는 바로 읽고,
+    텍스트 PDF는 원래 줄 구조를 최대한 살려 읽고,
     사진은 OCR로 중국어를 인식합니다.
   </div>
-
 </section>
 
-
-
-<!-- 공부 화면 -->
-
 <main id="studyApp">
-
   <div class="study-layout">
 
     <section id="scriptArea">
-
-      <div
-        class="document-title"
-        id="documentTitle"
-      ></div>
-
+      <div class="document-title" id="documentTitle"></div>
       <div id="scriptText"></div>
-
     </section>
 
-
     <aside id="analysisPanel">
-
-      <button
-        class="close-panel"
-        onclick="closePanel()"
-      >
-        ×
-      </button>
-
+      <button class="close-panel" onclick="closePanel()">×</button>
 
       <div id="analysisLoading">
         AI가 분석하고 있어요...
       </div>
 
-
       <div id="analysisContent">
 
         <div class="word-main">
-
           <div id="resultWord"></div>
-
           <div id="resultPinyin"></div>
-
           <div id="resultMeaning"></div>
-
         </div>
 
-
         <section class="analysis-section">
-
-          <div class="section-title">
-            한자 풀이
-          </div>
-
+          <div class="section-title">한자 풀이</div>
           <div id="characters"></div>
-
         </section>
 
-
         <section class="analysis-section">
-
-          <div class="section-title">
-            문법 · 어순
-          </div>
-
+          <div class="section-title">문법 · 어순</div>
           <div id="grammar"></div>
-
         </section>
 
-
         <section class="analysis-section">
-
-          <div class="section-title">
-            뉘앙스
-          </div>
-
+          <div class="section-title">뉘앙스</div>
           <div id="nuance"></div>
-
         </section>
 
-
         <section class="analysis-section">
-
-          <div class="section-title">
-            관련 표현
-          </div>
-
+          <div class="section-title">관련 표현</div>
           <div id="relatedWords"></div>
-
         </section>
 
-
         <section class="analysis-section">
-
-          <div class="section-title">
-            유의어
-          </div>
-
+          <div class="section-title">유의어</div>
           <div id="synonyms"></div>
-
         </section>
 
-
         <section class="analysis-section">
-
-          <div class="section-title">
-            반의어
-          </div>
-
+          <div class="section-title">반의어</div>
           <div id="antonyms"></div>
-
         </section>
-
 
         <section class="analysis-section">
-
-          <div class="section-title">
-            기억하기
-          </div>
-
+          <div class="section-title">기억하기</div>
           <div id="studyTip"></div>
-
         </section>
-
 
         <div id="error"></div>
 
       </div>
-
     </aside>
 
   </div>
-
 </main>
-
-
 
 <script>
 
 /* =========================
-   Supabase 연결
+   Supabase
 ========================= */
 
 const SUPABASE_URL =
@@ -780,13 +523,12 @@ const client =
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-
 let fullText = "";
 let selectedElement = null;
 
 
 /* =========================
-   파일 선택 연결
+   파일 버튼
 ========================= */
 
 document
@@ -796,7 +538,6 @@ document
     e => handlePDF(e.target.files[0])
   );
 
-
 document
   .getElementById("pdfInputBig")
   .addEventListener(
@@ -804,14 +545,12 @@ document
     e => handlePDF(e.target.files[0])
   );
 
-
 document
   .getElementById("imageInput")
   .addEventListener(
     "change",
     e => handleImage(e.target.files[0])
   );
-
 
 document
   .getElementById("imageInputBig")
@@ -822,25 +561,181 @@ document
 
 
 /* =========================
-   상태 표시
+   상태
 ========================= */
 
 function showStatus(message) {
-
   const box =
     document.getElementById("status");
 
   box.textContent = message;
-
   box.style.display = "block";
+}
 
+function hideStatus() {
+  document
+    .getElementById("status")
+    .style.display = "none";
 }
 
 
-function hideStatus() {
+/* =========================
+   PDF의 원래 줄 복원
 
-  document.getElementById("status")
-    .style.display = "none";
+   PDF 안의 글자는
+   글자 + 화면 위치 정보로 저장된다.
+
+   Y좌표가 비슷한 글자들을
+   같은 줄로 묶는다.
+========================= */
+
+function extractPageLines(items) {
+
+  const usable =
+    items
+      .filter(
+        item =>
+          item.str &&
+          item.str.trim()
+      )
+      .map(item => ({
+        text: item.str,
+
+        x:
+          item.transform
+            ? item.transform[4]
+            : 0,
+
+        y:
+          item.transform
+            ? item.transform[5]
+            : 0,
+
+        width:
+          item.width || 0
+      }));
+
+
+  if (!usable.length) {
+    return "";
+  }
+
+
+  const lines = [];
+
+  /*
+    글자의 Y좌표가 몇 픽셀 정도
+    차이나는 것은 같은 줄로 본다.
+  */
+
+  const yTolerance = 3.5;
+
+
+  for (const item of usable) {
+
+    let line =
+      lines.find(
+        current =>
+          Math.abs(
+            current.y - item.y
+          ) <= yTolerance
+      );
+
+
+    if (!line) {
+
+      line = {
+        y: item.y,
+        items: []
+      };
+
+      lines.push(line);
+    }
+
+
+    line.items.push(item);
+
+  }
+
+
+  /*
+    PDF 좌표는 아래에서 위로 커지므로
+    Y값이 큰 줄부터 화면 위쪽이다.
+  */
+
+  lines.sort(
+    (a, b) => b.y - a.y
+  );
+
+
+  return lines
+    .map(line => {
+
+      /*
+        같은 줄에서는
+        왼쪽 → 오른쪽 순서
+      */
+
+      line.items.sort(
+        (a, b) => a.x - b.x
+      );
+
+
+      let output = "";
+
+      let previous = null;
+
+
+      for (
+        const item of line.items
+      ) {
+
+        if (previous) {
+
+          const previousEnd =
+            previous.x +
+            previous.width;
+
+
+          const gap =
+            item.x -
+            previousEnd;
+
+
+          /*
+            글자 조각이 실제로 떨어져 있을 때만
+            공백을 추가한다.
+
+            예전처럼 모든 item 사이에
+            강제로 공백을 넣지 않는다.
+          */
+
+          if (
+            gap > 2.5 &&
+            !/[\s([{“‘]$/.test(
+              output
+            )
+          ) {
+
+            output += " ";
+
+          }
+
+        }
+
+
+        output += item.text;
+
+        previous = item;
+
+      }
+
+
+      return output.trim();
+
+    })
+    .filter(Boolean)
+    .join("\n");
 
 }
 
@@ -853,12 +748,17 @@ async function handlePDF(file) {
 
   if (!file) return;
 
-  showStatus("PDF를 읽고 있어요...");
+
+  showStatus(
+    "PDF를 읽고 있어요..."
+  );
+
 
   try {
 
     const buffer =
       await file.arrayBuffer();
+
 
     const pdf =
       await pdfjsLib
@@ -868,7 +768,7 @@ async function handlePDF(file) {
         .promise;
 
 
-    let text = "";
+    const pages = [];
 
 
     for (
@@ -883,25 +783,43 @@ async function handlePDF(file) {
 
 
       const page =
-        await pdf.getPage(pageNumber);
+        await pdf.getPage(
+          pageNumber
+        );
 
 
       const content =
-        await page.getTextContent();
+        await page
+          .getTextContent();
 
+
+      /*
+        핵심 변경점:
+        item.str을 전부 join(" ") 하지 않고
+        PDF 위치를 이용해 줄을 복원한다.
+      */
 
       const pageText =
-        content.items
-          .map(item => item.str)
-          .join(" ");
+        extractPageLines(
+          content.items
+        );
 
 
-      text += pageText + "\n";
+      if (pageText) {
+
+        pages.push(
+          pageText
+        );
+
+      }
 
     }
 
 
-    text = cleanText(text);
+    const text =
+      cleanText(
+        pages.join("\n\n")
+      );
 
 
     if (!containsChinese(text)) {
@@ -974,6 +892,7 @@ async function handleImage(file) {
                   * 100
                 );
 
+
               showStatus(
                 `글자 인식 중... ${percent}%`
               );
@@ -1035,6 +954,8 @@ function cleanText(text) {
   return text
     .replace(/\r/g, "")
     .replace(/[ \t]+/g, " ")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 
@@ -1043,7 +964,9 @@ function cleanText(text) {
 
 function containsChinese(text) {
 
-  return /[\u3400-\u9FFF]/.test(text);
+  return /[\u3400-\u9FFF]/.test(
+    text
+  );
 
 }
 
@@ -1060,19 +983,28 @@ function openDocument(
   fullText = text;
 
 
-  document.getElementById(
-    "startScreen"
-  ).style.display = "none";
+  document
+    .getElementById(
+      "startScreen"
+    )
+    .style.display =
+      "none";
 
 
-  document.getElementById(
-    "studyApp"
-  ).style.display = "block";
+  document
+    .getElementById(
+      "studyApp"
+    )
+    .style.display =
+      "block";
 
 
-  document.getElementById(
-    "documentTitle"
-  ).textContent = fileName || "";
+  document
+    .getElementById(
+      "documentTitle"
+    )
+    .textContent =
+      fileName || "";
 
 
   renderScript(text);
@@ -1087,74 +1019,99 @@ function openDocument(
 
 
 /* =========================
-   문장 분리
+   문장/줄 분리
+
+   PDF에서 복원한 줄바꿈을
+   우선적으로 보존한다.
 ========================= */
 
 function splitSentences(text) {
 
-  const matches =
-    text.match(
-      /[^。！？!?\n]+[。！？!?]?|\n+/g
-    );
+  const lines =
+    text
+      .split(/\n+/)
+      .map(
+        line =>
+          line.trim()
+      )
+      .filter(Boolean);
 
 
-  if (!matches) {
-    return [text];
+  const result = [];
+
+
+  for (const line of lines) {
+
+    const pieces =
+      line.match(
+        /[^。！？!?]+[。！？!?]?/g
+      );
+
+
+    if (pieces) {
+
+      result.push(
+        ...pieces
+          .map(
+            item =>
+              item.trim()
+          )
+          .filter(Boolean)
+      );
+
+    } else {
+
+      result.push(line);
+
+    }
+
   }
 
 
-  return matches
-    .map(item => item.trim())
-    .filter(Boolean);
+  return result;
 
 }
 
 
 /* =========================
-   학습용 단어 분리
-
-   Intl.Segmenter만 쓰면
-   很喜欢 같은 표현이
-   한 덩어리가 될 수 있어서
-
-   자주 쓰는 기능어를
-   추가로 분리한다.
+   중국어 단어 분리
 ========================= */
 
-const functionWords = new Set([
-  "很",
-  "太",
-  "真",
-  "更",
-  "最",
-  "也",
-  "都",
-  "还",
-  "就",
-  "才",
-  "又",
-  "再",
-  "不",
-  "没",
-  "别",
-  "的",
-  "了",
-  "着",
-  "过",
-  "吗",
-  "呢",
-  "吧",
-  "啊",
-  "呀",
-  "我",
-  "你",
-  "他",
-  "她",
-  "它",
-  "我们",
-  "你们",
-  "他们"
-]);
+const functionWords =
+  new Set([
+    "很",
+    "太",
+    "真",
+    "更",
+    "最",
+    "也",
+    "都",
+    "还",
+    "就",
+    "才",
+    "又",
+    "再",
+    "不",
+    "没",
+    "别",
+    "的",
+    "了",
+    "着",
+    "过",
+    "吗",
+    "呢",
+    "吧",
+    "啊",
+    "呀",
+    "我",
+    "你",
+    "他",
+    "她",
+    "它",
+    "我们",
+    "你们",
+    "他们"
+  ]);
 
 
 function segmentChinese(text) {
@@ -1174,7 +1131,11 @@ function segmentChinese(text) {
 
 
     const raw =
-      [...segmenter.segment(text)];
+      [
+        ...segmenter.segment(
+          text
+        )
+      ];
 
 
     const output = [];
@@ -1202,18 +1163,25 @@ function segmentChinese(text) {
 
 
       const divided =
-        splitLearningToken(token);
+        splitLearningToken(
+          token
+        );
 
 
-      divided.forEach(part => {
+      divided.forEach(
+        part => {
 
-        output.push({
-          text: part,
-          clickable:
-            containsChinese(part)
-        });
+          output.push({
+            text: part,
 
-      });
+            clickable:
+              containsChinese(
+                part
+              )
+          });
+
+        }
+      );
 
     }
 
@@ -1223,24 +1191,33 @@ function segmentChinese(text) {
   }
 
 
-  return [...text].map(char => ({
-    text: char,
-    clickable:
-      containsChinese(char)
-  }));
+  return [...text]
+    .map(char => ({
+      text: char,
+
+      clickable:
+        containsChinese(char)
+    }));
 
 }
 
 
 /* =========================
    很喜欢 → 很 / 喜欢
-   我很喜欢 → 我 / 很 / 喜欢
 ========================= */
 
-function splitLearningToken(token) {
+function splitLearningToken(
+  token
+) {
 
-  if (functionWords.has(token)) {
+  if (
+    functionWords.has(
+      token
+    )
+  ) {
+
     return [token];
+
   }
 
 
@@ -1253,7 +1230,8 @@ function splitLearningToken(token) {
     [...functionWords]
       .sort(
         (a, b) =>
-          b.length - a.length
+          b.length -
+          a.length
       );
 
 
@@ -1262,10 +1240,15 @@ function splitLearningToken(token) {
     let matched = false;
 
 
-    for (const word of orderedWords) {
+    for (
+      const word of
+      orderedWords
+    ) {
 
       if (
-        rest.startsWith(word) &&
+        rest.startsWith(
+          word
+        ) &&
         rest !== word
       ) {
 
@@ -1320,97 +1303,116 @@ function renderScript(text) {
     splitSentences(text);
 
 
-  sentences.forEach(sentence => {
+  sentences.forEach(
+    sentence => {
 
-    const sentenceElement =
-      document.createElement(
-        "div"
-      );
-
-
-    sentenceElement.className =
-      "sentence";
-
-
-    const tokens =
-      segmentChinese(sentence);
-
-
-    tokens.forEach(token => {
-
-      if (!token.clickable) {
-
-        sentenceElement
-          .appendChild(
-            document.createTextNode(
-              token.text
-            )
-          );
-
-        return;
-
-      }
-
-
-      const span =
+      const sentenceElement =
         document.createElement(
-          "span"
+          "div"
         );
 
 
-      span.className = "word";
-
-      span.textContent =
-        token.text;
+      sentenceElement.className =
+        "sentence";
 
 
-      span.addEventListener(
-        "click",
-        () =>
-          selectWord(
-            token.text,
-            sentence,
-            span
-          )
-      );
+      const tokens =
+        segmentChinese(
+          sentence
+        );
 
 
-      /* PC에서는 마우스를 올려도
-         패널을 열 수 있다. */
-
-      span.addEventListener(
-        "mouseenter",
-        () => {
+      tokens.forEach(
+        token => {
 
           if (
-            window.matchMedia(
-              "(hover:hover)"
-            ).matches
+            !token.clickable
           ) {
 
-            selectWord(
-              token.text,
-              sentence,
-              span
-            );
+            sentenceElement
+              .appendChild(
+                document
+                  .createTextNode(
+                    token.text
+                  )
+              );
+
+            return;
 
           }
+
+
+          const span =
+            document
+              .createElement(
+                "span"
+              );
+
+
+          span.className =
+            "word";
+
+          span.textContent =
+            token.text;
+
+
+          /*
+            휴대폰:
+            단어를 탭하면 분석
+
+            PC:
+            클릭 또는 마우스를 올리면 분석
+          */
+
+          span.addEventListener(
+            "click",
+            () =>
+              selectWord(
+                token.text,
+                sentence,
+                span
+              )
+          );
+
+
+          span.addEventListener(
+            "mouseenter",
+            () => {
+
+              if (
+                window
+                  .matchMedia(
+                    "(hover:hover)"
+                  )
+                  .matches
+              ) {
+
+                selectWord(
+                  token.text,
+                  sentence,
+                  span
+                );
+
+              }
+
+            }
+          );
+
+
+          sentenceElement
+            .appendChild(span);
 
         }
       );
 
 
-      sentenceElement
-        .appendChild(span);
+      container
+        .appendChild(
+          sentenceElement
+        );
 
-    });
-
-
-    container.appendChild(
-      sentenceElement
-    );
-
-  });
+    }
+  );
 
 }
 
@@ -1426,9 +1428,13 @@ async function selectWord(
 ) {
 
   if (
-    selectedElement === element &&
-    document.body.classList
-      .contains("panel-open")
+    selectedElement ===
+      element &&
+    document.body
+      .classList
+      .contains(
+        "panel-open"
+      )
   ) {
 
     return;
@@ -1440,12 +1446,16 @@ async function selectWord(
 
     selectedElement
       .classList
-      .remove("selected");
+      .remove(
+        "selected"
+      );
 
   }
 
 
-  selectedElement = element;
+  selectedElement =
+    element;
+
 
   element.classList.add(
     "selected"
@@ -1454,7 +1464,9 @@ async function selectWord(
 
   document.body
     .classList
-    .add("panel-open");
+    .add(
+      "panel-open"
+    );
 
 
   await analyzeWord(
@@ -1473,14 +1485,18 @@ function closePanel() {
 
   document.body
     .classList
-    .remove("panel-open");
+    .remove(
+      "panel-open"
+    );
 
 
   if (selectedElement) {
 
     selectedElement
       .classList
-      .remove("selected");
+      .remove(
+        "selected"
+      );
 
   }
 
@@ -1523,7 +1539,8 @@ async function analyzeWord(
   content.style.display =
     "none";
 
-  errorBox.textContent = "";
+  errorBox.textContent =
+    "";
 
 
   try {
@@ -1532,16 +1549,18 @@ async function analyzeWord(
       data,
       error
     } =
-      await client.functions.invoke(
-        "dynamic-api",
-        {
-          body: {
-            text: word,
-            type: "word",
-            context: sentence
+      await client
+        .functions
+        .invoke(
+          "dynamic-api",
+          {
+            body: {
+              text: word,
+              type: "word",
+              context: sentence
+            }
           }
-        }
-      );
+        );
 
 
     if (error) {
@@ -1549,12 +1568,17 @@ async function analyzeWord(
     }
 
 
-    renderAnalysis(data);
+    renderAnalysis(
+      data
+    );
 
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
+
 
     content.style.display =
       "block";
@@ -1577,10 +1601,12 @@ async function analyzeWord(
 
 
 /* =========================
-   결과 표시
+   분석 결과
 ========================= */
 
-function renderAnalysis(data) {
+function renderAnalysis(
+  data
+) {
 
   const content =
     document.getElementById(
@@ -1654,10 +1680,15 @@ function renderAnalysis(data) {
 
 
 /* =========================
-   한자 풀이 표시
+   한자 풀이
+
+   새 API:
+   korean_hanja = "너 니"
 ========================= */
 
-function renderCharacters(items) {
+function renderCharacters(
+  items
+) {
 
   const box =
     document.getElementById(
@@ -1670,91 +1701,105 @@ function renderCharacters(items) {
 
   if (!items.length) {
 
-    box.textContent = "—";
+    box.textContent =
+      "—";
 
     return;
 
   }
 
 
-  items.forEach(item => {
+  items.forEach(
+    item => {
 
-    const card =
-      document.createElement(
-        "div"
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "character-card";
+
+
+      const hanzi =
+        document.createElement(
+          "span"
+        );
+
+
+      hanzi.className =
+        "character-hanzi";
+
+
+      hanzi.textContent =
+        item.character || "";
+
+
+      const pinyin =
+        document.createElement(
+          "span"
+        );
+
+
+      pinyin.className =
+        "character-pinyin";
+
+
+      pinyin.textContent =
+        item.pinyin || "";
+
+
+      const korean =
+        document.createElement(
+          "span"
+        );
+
+
+      korean.className =
+        "character-korean";
+
+
+      /*
+        새 결과는 korean_hanja,
+        기존 캐시는 meaning일 수 있으므로
+        둘 다 지원한다.
+      */
+
+      korean.textContent =
+        item.korean_hanja ||
+        item.korean_reading ||
+        item.meaning ||
+        "";
+
+
+      card.appendChild(
+        hanzi
+      );
+
+      card.appendChild(
+        pinyin
+      );
+
+      card.appendChild(
+        korean
       );
 
 
-    card.className =
-      "character-card";
-
-
-    const hanzi =
-      document.createElement(
-        "span"
+      box.appendChild(
+        card
       );
 
-
-    hanzi.className =
-      "character-hanzi";
-
-    hanzi.textContent =
-      item.character || "";
-
-
-    const pinyin =
-      document.createElement(
-        "span"
-      );
-
-
-    pinyin.className =
-      "character-pinyin";
-
-    pinyin.textContent =
-      item.pinyin || "";
-
-
-    const korean =
-      document.createElement(
-        "span"
-      );
-
-
-    korean.className =
-      "character-korean";
-
-
-    /*
-      새 Edge Function에서는
-      korean_hanja 값을 받는다.
-
-      아직 함수를 수정하기 전에는
-      기존 meaning을 대신 표시한다.
-    */
-
-    korean.textContent =
-      item.korean_hanja ||
-      item.korean_reading ||
-      item.meaning ||
-      "";
-
-
-    card.appendChild(hanzi);
-    card.appendChild(pinyin);
-    card.appendChild(korean);
-
-
-    box.appendChild(card);
-
-  });
+    }
+  );
 
 }
 
 
 /* =========================
-   관련 표현을
-   하나씩 별도 표시
+   관련 표현 / 유의어 / 반의어
+
+   표현마다 별도의 카드로 표시
 ========================= */
 
 function renderExpressions(
@@ -1771,126 +1816,200 @@ function renderExpressions(
   box.innerHTML = "";
 
 
-  if (!Array.isArray(items) ||
-      !items.length) {
+  if (
+    !Array.isArray(items) ||
+    !items.length
+  ) {
 
-    box.textContent = "—";
+    box.textContent =
+      "—";
 
     return;
 
   }
 
 
-  items.forEach(item => {
+  items.forEach(
+    item => {
 
-    const card =
-      document.createElement(
-        "div"
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "expression-card";
+
+
+      if (
+        typeof item ===
+        "string"
+      ) {
+
+        card.textContent =
+          item;
+
+
+        box.appendChild(
+          card
+        );
+
+
+        return;
+
+      }
+
+
+      const firstLine =
+        document.createElement(
+          "div"
+        );
+
+
+      const word =
+        document.createElement(
+          "span"
+        );
+
+
+      word.className =
+        "expression-word";
+
+
+      word.textContent =
+        item.word || "";
+
+
+      const pinyin =
+        document.createElement(
+          "span"
+        );
+
+
+      pinyin.className =
+        "expression-pinyin";
+
+
+      pinyin.textContent =
+        item.pinyin || "";
+
+
+      firstLine.appendChild(
+        word
+      );
+
+      firstLine.appendChild(
+        pinyin
       );
 
 
-    card.className =
-      "expression-card";
+      const meaning =
+        document.createElement(
+          "div"
+        );
 
 
-    if (
-      typeof item === "string"
-    ) {
+      meaning.className =
+        "expression-meaning";
 
-      card.textContent = item;
 
-      box.appendChild(card);
+      let description =
+        item.meaning || "";
 
-      return;
+
+      if (
+        item.difference
+      ) {
+
+        description +=
+          (
+            description
+              ? "\n"
+              : ""
+          ) +
+          item.difference;
+
+      }
+
+
+      /*
+        새 AI가 관련 표현별 예문을 보내면
+        각각의 표현 아래에 표시한다.
+      */
+
+      const example =
+        item.example ||
+        item.example_sentence ||
+        "";
+
+
+      const examplePinyin =
+        item.example_pinyin ||
+        "";
+
+
+      const exampleMeaning =
+        item.example_meaning ||
+        "";
+
+
+      if (example) {
+
+        description +=
+          (
+            description
+              ? "\n"
+              : ""
+          ) +
+          example;
+
+      }
+
+
+      if (examplePinyin) {
+
+        description +=
+          "\n" +
+          examplePinyin;
+
+      }
+
+
+      if (exampleMeaning) {
+
+        description +=
+          "\n" +
+          exampleMeaning;
+
+      }
+
+
+      meaning.textContent =
+        description;
+
+
+      card.appendChild(
+        firstLine
+      );
+
+      card.appendChild(
+        meaning
+      );
+
+
+      box.appendChild(
+        card
+      );
 
     }
-
-
-    const firstLine =
-      document.createElement(
-        "div"
-      );
-
-
-    const word =
-      document.createElement(
-        "span"
-      );
-
-
-    word.className =
-      "expression-word";
-
-    word.textContent =
-      item.word || "";
-
-
-    const pinyin =
-      document.createElement(
-        "span"
-      );
-
-
-    pinyin.className =
-      "expression-pinyin";
-
-    pinyin.textContent =
-      item.pinyin || "";
-
-
-    firstLine.appendChild(word);
-    firstLine.appendChild(pinyin);
-
-
-    const meaning =
-      document.createElement(
-        "div"
-      );
-
-
-    meaning.className =
-      "expression-meaning";
-
-
-    let description =
-      item.meaning || "";
-
-
-    if (item.difference) {
-
-      description +=
-        (
-          description
-            ? "\n"
-            : ""
-        ) +
-        item.difference;
-
-    }
-
-
-    meaning.textContent =
-      description;
-
-
-    card.appendChild(
-      firstLine
-    );
-
-    card.appendChild(
-      meaning
-    );
-
-
-    box.appendChild(card);
-
-  });
+  );
 
 }
 
 
 /* =========================
-   안전하게 글자 넣기
+   안전하게 텍스트 표시
 ========================= */
 
 function setText(
@@ -1898,7 +2017,8 @@ function setText(
   value
 ) {
 
-  document.getElementById(id)
+  document
+    .getElementById(id)
     .textContent =
       value || "—";
 
