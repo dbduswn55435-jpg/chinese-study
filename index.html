@@ -2019,6 +2019,7 @@ async function loadMyData() {
             "study_documents"
           )
           .select("*")
+          .eq("language", "zh")
           .order(
             "created_at",
             {
@@ -2032,6 +2033,7 @@ async function loadMyData() {
             "vocabulary"
           )
           .select("*")
+          .eq("language", "zh")
           .order(
             "created_at",
             {
