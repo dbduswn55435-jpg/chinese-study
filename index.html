@@ -2610,16 +2610,14 @@ function extractPageLines(
 
 
       return group.items
-        .map(
-          item =>
-            item.text
-        )
-        .join("")
-        .replace(
-          /\s+/g,
-          " "
-        )
-        .trim();
+  .map(item => item.text)
+  .join("")
+  .replace(
+    /([\u3400-\u9FFF])\s+(?=[\u3400-\u9FFF])/g,
+    "$1"
+  )
+  .replace(/\s+/g, " ")
+  .trim();
 
     }
   );
