@@ -2729,17 +2729,8 @@ function buildChineseRows(lines) {
       continue;
     }
 
-    // OCR/PDF 때문에 한자 사이에 생긴 불필요한 공백 제거
-    // 예: 我 平 时 不 怎 么 → 我平时不怎么
-    line = line.replace(
-      /([\u3400-\u9FFF])\s+(?=[\u3400-\u9FFF])/g,
-      "$1"
-    );
-
-    // 앞뒤 불필요한 공백 정리
-    line = line
-      .replace(/\s+/g, " ")
-      .trim();
+    // 중국어 대사 안에 PDF/OCR이 만든 가짜 공백 제거
+line = line.replace(/\s+/g, "").trim();
 
     if (!line) continue;
 
