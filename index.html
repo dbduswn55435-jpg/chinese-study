@@ -2672,77 +2672,40 @@ async function extractImage(
 
 
 /* ==========================================================
-   10. 시간 + 중국어 대본 생성
+   10. 중국어 대본 생성
 ========================================================== */
 
-function findTime(
-  text
-) {
-
-  const match =
-    String(text)
-      .match(
-        /\b\d{1,2}:\d{2}\b/
-      );
-
-
-  return match
-    ? match[0]
-    : null;
-
+function hasChinese(text) {
+  return /[\u3400-\u9fff]/.test(String(text));
 }
-
-
-
-function hasChinese(
-  text
-) {
-
-  return /[\u3400-\u9fff]/.test(
-    String(text)
-  );
-
-}
-
-
 
 function buildChineseRows(lines) {
   const rows = [];
-  let pendingTime = "";
 
   for (const original of lines) {
     let line = String(original || "").trim();
 
     if (!line) continue;
 
-    // 시간이 있으면 기억해 둠
-    const time = findTime(line);
-    if (time) {
-      pendingTime = time;
-    }
-
-    // 시간 표시는 중국어 문장에서 제거
-    line = line
-      .replace(/\d{1,2}:\d{2}/g, "")
-      .trim();
-
-    // 중국어가 없는 줄은 대본으로 만들지 않음
+    // 한자가 없는 줄은 제외
+    // → 시간, 날짜, 병음, 한국어 번역만 있는 줄 등이 여기서 빠짐
     if (!hasChinese(line)) {
       continue;
     }
 
-    // 중국어 대사 안에 PDF/OCR이 만든 가짜 공백 제거
-line = line.replace(/\s+/g, "").trim();
+    // 한자가 있는 줄에 섞여 들어온 한글 제거
+    line = line
+      .replace(/[가-힣ㄱ-ㅎㅏ-ㅣ]+/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
 
-    if (!line) continue;
+    if (!line || !hasChinese(line)) {
+      continue;
+    }
 
     rows.push({
-      time: pendingTime || "",
       chinese: line
     });
-
-    // 시간은 바로 다음 중국어 문장에만 사용
-    pendingTime = "";
   }
 
   return rows;
