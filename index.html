@@ -5006,160 +5006,108 @@ async function toggleTranslation(
    24. PDF 업로드 후 단어 미리 분석
 ========================================================== */
 
-async function prefetchDocument(
-  doc
-) {
+async function prefetchDocument(doc) {
+  const words = new Set();
 
-  const words =
-    new Set();
+  const rows = Array.isArray(doc.rows)
+    ? doc.rows
+    : [];
 
+  rows.forEach(row => {
+    segmentChinese(row.chinese)
+      .filter(item => item.isWord)
+      .forEach(item => {
+        words.add(item.text);
+      });
+  });
 
-  const rows =
-    Array.isArray(
-      doc.rows
-    )
-      ? doc.rows
-      : [];
+  const list = [...words];
 
-
-  rows.forEach(
-    row => {
-
-      segmentChinese(
-        row.chinese
-      )
-        .filter(
-          item =>
-            item.isWord
-        )
-        .forEach(
-          item => {
-
-            words.add(
-              item.text
-            );
-
-          }
-        );
-
-    }
-  );
-
-
-  const list =
-    [
-      ...words
-    ];
-
-
-  if (
-    !list.length
-  ) {
-
-    return;
-
-  }
-
+  if (!list.length) return;
 
   const status =
-    document.getElementById(
-      "prefetchStatus"
-    );
+    document.getElementById("prefetchStatus");
 
-
-  let finished =
-    0;
-
+  const BATCH_SIZE = 30;
+  let finished = 0;
 
   status.textContent =
-    `단어 준비 중 0/${list.length}`;
-
+    `단어 준비 중 · 1~${Math.min(30, list.length)}`;
 
   /*
-    동시에 너무 많은 요청을 보내지 않음.
-    2개씩 처리.
+    앞에서부터 30개씩 준비한다.
+    한 묶음이 끝나면 다음 30개로 넘어감.
 
-    서버에 이미 있는 단어는
-    word_cache에서 즉시 반환되므로
-    OpenAI를 다시 사용하지 않는다.
+    각 묶음 안에서는 동시에 너무 많은 요청을
+    보내지 않도록 worker 2개만 사용한다.
   */
+  for (
+    let start = 0;
+    start < list.length;
+    start += BATCH_SIZE
+  ) {
+    const batch =
+      list.slice(
+        start,
+        start + BATCH_SIZE
+      );
 
-  const queue =
-    [
-      ...list
-    ];
+    const queue = [...batch];
 
+    const batchStart = start + 1;
+    const batchEnd =
+      Math.min(
+        start + BATCH_SIZE,
+        list.length
+      );
 
-  async function worker() {
+    status.textContent =
+      `단어 준비 중 · ${batchStart}~${batchEnd}`;
 
-    while (
-      queue.length
-    ) {
+    async function worker() {
+      while (queue.length) {
+        const word = queue.shift();
 
-      const word =
-        queue.shift();
-
-
-      try {
-
-        await getWordAnalysis(
-          word
-        );
-
-
-      } catch (error) {
-
-        console.warn(
-          "prefetch 실패",
-          word,
-          error
-        );
-
-
-      } finally {
-
-        finished++;
-
-
-        status.textContent =
-          `단어 준비 중 ${finished}/${list.length}`;
-
+        try {
+          await getWordAnalysis(word);
+        } catch (error) {
+          console.warn(
+            "단어 미리 분석 실패",
+            word,
+            error
+          );
+        } finally {
+          finished++;
+        }
       }
-
     }
 
+    await Promise.all([
+      worker(),
+      worker()
+    ]);
+
+    /*
+      다음 30개로 넘어가기 전에
+      아주 잠깐 브라우저에 여유를 줌
+    */
+    await new Promise(resolve =>
+      setTimeout(resolve, 150)
+    );
   }
 
-
-  await Promise.all([
-    worker(),
-    worker()
-  ]);
-
-
   status.textContent =
-    `단어 준비 완료 · ${list.length}개 확인`;
+    `단어 준비 완료 ✓`;
 
-
-  setTimeout(
-    () => {
-
-      if (
-        status.textContent
-          .startsWith(
-            "단어 준비 완료"
-          )
-      ) {
-
-        status.textContent =
-          "";
-
-      }
-
-    },
-    3500
-  );
-
+  setTimeout(() => {
+    if (
+      status.textContent.startsWith(
+        "단어 준비 완료"
+      )
+    ) {
+      status.textContent = "";
+    }
+  }, 3500);
 }
 
 
