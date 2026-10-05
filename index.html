@@ -308,20 +308,12 @@
     ========================================= */
 
     .document-toolbar {
-      position: sticky;
-      top: 116px;
-      z-index: 24;
-
       display: flex;
       gap: 9px;
+
       overflow-x: auto;
 
-      margin: -18px -18px 0;
-      padding: 12px 18px 9px;
-
-      background: rgba(247, 247, 251, .96);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      padding-bottom: 7px;
 
       scrollbar-width: none;
     }
@@ -369,22 +361,6 @@
       color: var(--accent);
 
       font-weight: 850;
-    }
-
-    .document-rename-input {
-      flex: 0 0 auto;
-      width: 150px;
-      padding: 9px 12px;
-
-      border: 2px solid var(--accent);
-      border-radius: 15px;
-
-      background: white;
-      color: var(--text);
-
-      font: inherit;
-      font-weight: 800;
-      outline: none;
     }
 
 
@@ -841,20 +817,11 @@
     .hanzi-pick {
       width: 44px;
       height: 44px;
-      padding: 0;
-
       border: 1px solid var(--border);
       border-radius: 12px;
       background: white;
-
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-
       font-size: 23px;
       font-weight: 850;
-      line-height: 1;
-      text-align: center;
     }
 
     .hanzi-pick.active {
@@ -864,10 +831,7 @@
     }
 
     .hanzi-practice-title {
-      grid-row: 1;
-
       margin: 0 0 9px;
-
       font-size: 13px;
       font-weight: 850;
       color: var(--subtext);
@@ -875,33 +839,13 @@
 
     .hanzi-practice-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
       align-items: start;
     }
 
     .hanzi-practice-column {
       min-width: 0;
-
-      display: grid;
-      grid-template-rows:
-        auto
-        48px
-        auto
-        auto
-        auto;
-    }
-
-    .hanzi-practice-column > .hanzi-square {
-      grid-row: 3;
-    }
-
-    .hanzi-practice-column > .stroke-help {
-      grid-row: 4;
-    }
-
-    .hanzi-practice-column > .hanzi-reset {
-      grid-row: 5;
     }
 
     .hanzi-square {
@@ -974,33 +918,19 @@
     }
 
     .writing-tools {
-      grid-row: 2;
-
       margin: 0 0 8px;
-
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 5px;
-
-      min-height: 40px;
-    }
-
-    .hanzi-toolbar-spacer {
-      visibility: hidden;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .writing-tool {
-      width: 100%;
-      min-width: 0;
-      padding: 7px 3px;
-
+      padding: 7px 9px;
       border: 1px solid var(--border);
       border-radius: 10px;
       background: white;
-
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
-      white-space: nowrap;
     }
 
     .writing-tool.active {
@@ -1029,67 +959,13 @@
 
     @media (max-width: 430px) {
       .hanzi-practice-grid {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: 8px;
       }
 
       .writing-tool {
-        padding: 6px 2px;
-        font-size: 10px;
+        padding: 6px 7px;
+        font-size: 11px;
       }
-    }
-
-
-    .settings-top-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .font-size-options {
-      display: flex;
-      gap: 6px;
-    }
-
-    .font-size-button {
-      flex: 1;
-      padding: 10px 5px;
-
-      border: 0;
-      border-radius: 12px;
-
-      background: #f1f1f5;
-
-      font-size: 12px;
-      font-weight: 850;
-    }
-
-    .font-size-button.active {
-      background: var(--accent);
-      color: white;
-    }
-
-    .audio-rate-picker {
-      display: flex;
-      gap: 6px;
-
-      width: max-content;
-      margin-top: 7px;
-    }
-
-    .audio-rate-choice {
-      min-width: 46px;
-      padding: 7px 9px;
-
-      border: 1px solid var(--border);
-      border-radius: 10px;
-
-      background: white;
-      color: var(--text);
-
-      font-size: 12px;
-      font-weight: 850;
     }
 
     /* =========================================
@@ -1300,6 +1176,134 @@
     }
 
   
+</style>
+
+<style>
+  .audio-rate-picker{
+    display:flex;
+    gap:6px;
+    margin-top:7px;
+    width:max-content;
+  }
+  .audio-rate-choice{
+    min-width:46px;
+    padding:7px 9px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:white;
+    color:var(--text);
+    font-weight:850;
+  }
+
+  .hanzi-pick{
+    padding:0 !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    text-align:center !important;
+    line-height:1 !important;
+  }
+
+  .hanzi-practice-grid{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:12px !important;
+    align-items:start !important;
+  }
+
+  .hanzi-practice-column{
+    min-width:0 !important;
+    display:grid !important;
+    grid-template-rows:auto 48px auto auto auto !important;
+  }
+
+  .hanzi-practice-title{
+    grid-row:1;
+    margin-bottom:8px !important;
+  }
+
+  .writing-tools{
+    grid-row:2;
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:4px !important;
+    margin:0 0 8px !important;
+    min-height:40px !important;
+    align-items:stretch !important;
+  }
+
+  .writing-tool{
+    width:100% !important;
+    min-width:0 !important;
+    padding:6px 2px !important;
+    font-size:11px !important;
+    white-space:nowrap !important;
+  }
+
+  .hanzi-toolbar-spacer{
+    visibility:hidden;
+  }
+
+  .hanzi-practice-column .hanzi-square{
+    grid-row:3;
+    width:100% !important;
+    aspect-ratio:1/1 !important;
+  }
+
+  .hanzi-practice-column .stroke-help{
+    grid-row:4;
+  }
+
+  .hanzi-practice-column .hanzi-reset{
+    grid-row:5;
+  }
+
+  @media(max-width:430px){
+    .hanzi-practice-grid{
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+      gap:8px !important;
+    }
+    .writing-tool{
+      font-size:10px !important;
+    }
+  }
+
+  .settings-top-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    align-items:start;
+  }
+  .font-size-options{
+    display:flex;
+    gap:6px;
+  }
+  .font-size-button{
+    flex:1;
+    padding:10px 5px;
+    border:0;
+    border-radius:12px;
+    background:#f1f1f5;
+    font-size:12px;
+    font-weight:850;
+  }
+  .font-size-button.active{
+    background:var(--accent);
+    color:white;
+  }
+
+  .document-rename-input{
+    width:150px;
+    padding:9px 12px;
+    border:2px solid var(--accent);
+    border-radius:15px;
+    background:white;
+    color:var(--text);
+    font:inherit;
+    font-weight:800;
+    outline:none;
+  }
+</style>
 
 </head>
 
@@ -1796,6 +1800,9 @@ let learnedWords =
   new Set();
 
 let activeDocumentId = null;
+
+let lastDocumentTapId = null;
+let lastDocumentTapTime = 0;
 
 let authMode =
   "login";
@@ -3088,18 +3095,29 @@ function renderDocumentTabs() {
         const now =
           Date.now();
 
-        const previousTap =
-          Number(
-            doc._lastTabTap || 0
-          );
+        const isSecondTap =
+          lastDocumentTapId ===
+            doc.id &&
+          now -
+            lastDocumentTapTime <
+            500;
+
+
+        lastDocumentTapId =
+          doc.id;
+
+        lastDocumentTapTime =
+          now;
 
 
         if (
-          now - previousTap <
-          450
+          isSecondTap
         ) {
 
-          doc._lastTabTap =
+          lastDocumentTapId =
+            null;
+
+          lastDocumentTapTime =
             0;
 
           startDocumentRename(
@@ -3110,10 +3128,6 @@ function renderDocumentTabs() {
           return;
 
         }
-
-
-        doc._lastTabTap =
-          now;
 
 
         activeDocumentId =
@@ -6532,7 +6546,6 @@ function closeSpeechRateChoices() {
     );
 
 }
-
 
 
 function showSpeechRateChoices(
