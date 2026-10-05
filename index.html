@@ -309,8 +309,8 @@
 
     .document-toolbar {
       position: sticky;
-      top: var(--toolbar-top, 116px);
-      z-index: 24;
+      top: var(--toolbar-top, 112px);
+      z-index: 90;
 
       display: flex;
       gap: 9px;
@@ -320,9 +320,7 @@
       margin: -18px -18px 0;
       padding: 12px 18px 9px;
 
-      background: rgba(247, 247, 251, .96);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: var(--bg);
 
       scrollbar-width: none;
     }
@@ -826,11 +824,20 @@
     .hanzi-pick {
       width: 44px;
       height: 44px;
+      padding: 0;
+
       border: 1px solid var(--border);
       border-radius: 12px;
       background: white;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
       font-size: 23px;
       font-weight: 850;
+      line-height: 1;
+      text-align: center;
     }
 
     .hanzi-pick.active {
@@ -840,7 +847,9 @@
     }
 
     .hanzi-practice-title {
-      margin: 0 0 9px;
+      grid-row: 1;
+      margin: 0 0 8px;
+
       font-size: 13px;
       font-weight: 850;
       color: var(--subtext);
@@ -848,13 +857,15 @@
 
     .hanzi-practice-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 12px;
       align-items: start;
     }
 
     .hanzi-practice-column {
       min-width: 0;
+      display: grid;
+      grid-template-rows: auto 24px auto auto auto;
     }
 
     .hanzi-square {
@@ -927,19 +938,50 @@
     }
 
     .writing-tools {
-      margin: 0 0 8px;
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+      grid-row: 2;
+
+      margin: 0 0 4px;
+
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+
+      height: 20px;
     }
 
     .writing-tool {
-      padding: 7px 9px;
+      width: 100%;
+      min-width: 0;
+      height: 20px;
+      padding: 0 2px;
+
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 7px;
+
       background: white;
-      font-size: 12px;
+
+      font-size: 10px;
       font-weight: 800;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .hanzi-toolbar-spacer {
+      grid-row: 2;
+      height: 20px;
+      visibility: hidden;
+    }
+
+    .hanzi-practice-column > .hanzi-square {
+      grid-row: 3;
+    }
+
+    .hanzi-practice-column > .stroke-help {
+      grid-row: 4;
+    }
+
+    .hanzi-practice-column > .hanzi-reset {
+      grid-row: 5;
     }
 
     .writing-tool.active {
@@ -972,10 +1014,68 @@
       }
 
       .writing-tool {
-        padding: 6px 7px;
-        font-size: 11px;
+        font-size: 9px;
       }
     }
+
+    .audio-rate-picker {
+      display: flex;
+      gap: 6px;
+      width: max-content;
+      margin-top: 7px;
+    }
+
+    .audio-rate-choice {
+      min-width: 46px;
+      padding: 7px 9px;
+
+      border: 1px solid var(--border);
+      border-radius: 10px;
+
+      background: white;
+      color: var(--text);
+
+      font-weight: 850;
+    }
+
+    .font-size-options {
+      display: flex;
+      gap: 6px;
+    }
+
+    .font-size-button {
+      flex: 1;
+      padding: 10px 5px;
+
+      border: 0;
+      border-radius: 12px;
+
+      background: #f1f1f5;
+
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .font-size-button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .document-rename-input {
+      width: 150px;
+      padding: 9px 12px;
+
+      border: 2px solid var(--accent);
+      border-radius: 15px;
+
+      background: white;
+      color: var(--text);
+
+      font: inherit;
+      font-weight: 800;
+      outline: none;
+    }
+
 
     /* =========================================
        설정창
@@ -1187,134 +1287,7 @@
   
 </style>
 
-<style>
-  .audio-rate-picker{
-    display:flex;
-    gap:6px;
-    margin-top:7px;
-    width:max-content;
-  }
-  .audio-rate-choice{
-    min-width:46px;
-    padding:7px 9px;
-    border:1px solid var(--border);
-    border-radius:10px;
-    background:white;
-    color:var(--text);
-    font-weight:850;
-  }
 
-  .hanzi-pick{
-    padding:0 !important;
-    display:inline-flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    text-align:center !important;
-    line-height:1 !important;
-  }
-
-  .hanzi-practice-grid{
-    display:grid !important;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-    gap:12px !important;
-    align-items:start !important;
-  }
-
-  .hanzi-practice-column{
-    min-width:0 !important;
-    display:grid !important;
-    grid-template-rows:auto 26px auto auto auto !important;
-  }
-
-  .hanzi-practice-title{
-    grid-row:1;
-    margin-bottom:8px !important;
-  }
-
-  .writing-tools{
-    grid-row:2;
-    display:grid !important;
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-    gap:4px !important;
-    margin:0 0 8px !important;
-    min-height:22px !important;
-    align-items:stretch !important;
-  }
-
-  .writing-tool{
-    width:100% !important;
-    min-width:0 !important;
-    padding:2px 2px !important;
-    min-height:22px !important;
-    font-size:11px !important;
-    line-height:1.1 !important;
-    white-space:nowrap !important;
-  }
-
-  .hanzi-toolbar-spacer{
-    visibility:hidden;
-  }
-
-  .hanzi-practice-column .hanzi-square{
-    grid-row:3;
-    width:100% !important;
-    aspect-ratio:1/1 !important;
-  }
-
-  .hanzi-practice-column .stroke-help{
-    grid-row:4;
-  }
-
-  .hanzi-practice-column .hanzi-reset{
-    grid-row:5;
-  }
-
-  @media(max-width:430px){
-    .hanzi-practice-grid{
-      grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-      gap:8px !important;
-    }
-    .writing-tool{
-      font-size:10px !important;
-    }
-  }
-
-  .settings-top-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px;
-    align-items:start;
-  }
-  .font-size-options{
-    display:flex;
-    gap:6px;
-  }
-  .font-size-button{
-    flex:1;
-    padding:10px 5px;
-    border:0;
-    border-radius:12px;
-    background:#f1f1f5;
-    font-size:12px;
-    font-weight:850;
-  }
-  .font-size-button.active{
-    background:var(--accent);
-    color:white;
-  }
-
-  .document-rename-input{
-    width:150px;
-    padding:9px 12px;
-    border:2px solid var(--accent);
-    border-radius:15px;
-    background:white;
-    color:var(--text);
-    font:inherit;
-    font-weight:800;
-    outline:none;
-  }
-</style>
 
 </head>
 
@@ -1666,16 +1639,13 @@
   class="modal hidden"
   onclick="closeSettings(event)"
 >
-
   <div
     class="modal-box"
     onclick="event.stopPropagation()"
   >
-
     <div class="modal-title">
-      🎨 공부 설정
+      ⚙️ 공부 설정
     </div>
-
 
     <div class="setting-label">
       글자 크기
@@ -1730,7 +1700,6 @@
 
         </div>
 
-
     <div class="setting-label">
       원하는 색 직접 선택
     </div>
@@ -1743,18 +1712,14 @@
       onchange="setTheme(this.value)"
     >
 
-
     <button
       class="modal-close-button"
       onclick="closeSettings()"
     >
       완료
     </button>
-
   </div>
-
 </div>
-
 
 
 <div id="toast"></div>
@@ -1842,6 +1807,30 @@ let toastTimer = null;
 /* ==========================================================
    3. 앱 시작
 ========================================================== */
+
+function updateToolbarTop() {
+  const header =
+    document.querySelector(
+      ".app-header"
+    );
+
+  if (!header) return;
+
+  document
+    .documentElement
+    .style
+    .setProperty(
+      "--toolbar-top",
+      `${header.offsetHeight}px`
+    );
+}
+
+
+window.addEventListener(
+  "resize",
+  updateToolbarTop
+);
+
 
 async function init() {
 
@@ -7172,6 +7161,8 @@ function toast(
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+
+    updateToolbarTop();
 
     applyScriptFontSize(
       scriptFontSize
