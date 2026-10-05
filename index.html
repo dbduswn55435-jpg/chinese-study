@@ -308,12 +308,21 @@
     ========================================= */
 
     .document-toolbar {
+      position: sticky;
+      top: var(--toolbar-top, 116px);
+      z-index: 24;
+
       display: flex;
       gap: 9px;
 
       overflow-x: auto;
 
-      padding-bottom: 7px;
+      margin: -18px -18px 0;
+      padding: 12px 18px 9px;
+
+      background: rgba(247, 247, 251, .96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
 
       scrollbar-width: none;
     }
@@ -1214,7 +1223,7 @@
   .hanzi-practice-column{
     min-width:0 !important;
     display:grid !important;
-    grid-template-rows:auto 48px auto auto auto !important;
+    grid-template-rows:auto 26px auto auto auto !important;
   }
 
   .hanzi-practice-title{
@@ -1228,15 +1237,17 @@
     grid-template-columns:repeat(3,minmax(0,1fr)) !important;
     gap:4px !important;
     margin:0 0 8px !important;
-    min-height:40px !important;
+    min-height:22px !important;
     align-items:stretch !important;
   }
 
   .writing-tool{
     width:100% !important;
     min-width:0 !important;
-    padding:6px 2px !important;
+    padding:2px 2px !important;
+    min-height:22px !important;
     font-size:11px !important;
+    line-height:1.1 !important;
     white-space:nowrap !important;
   }
 
@@ -1419,7 +1430,7 @@
         onclick="openSettings()"
         title="설정"
       >
-        🎨
+        ⚙️
       </button>
 
       <button
@@ -1666,27 +1677,21 @@
     </div>
 
 
-    <div class="settings-top-row">
+    <div class="setting-label">
+      글자 크기
+    </div>
 
-      <div>
-        <div class="setting-label">
-          글자 크기
-        </div>
-
-        <div class="font-size-options">
+    <div class="font-size-options">
           <button id="fontSize1" class="font-size-button" type="button" onclick="setScriptFontSize(1)">기본</button>
           <button id="fontSize2" class="font-size-button" type="button" onclick="setScriptFontSize(2)">크게</button>
           <button id="fontSize3" class="font-size-button" type="button" onclick="setScriptFontSize(3)">더 크게</button>
         </div>
-      </div>
 
-      <div>
-        <div class="setting-label">
-          테마 색상
-        </div>
+    <div class="setting-label">
+      테마 색상
+    </div>
 
-
-        <div class="theme-options">
+    <div class="theme-options">
 
       <button
         class="theme-dot"
@@ -1724,9 +1729,6 @@
       ></button>
 
         </div>
-      </div>
-
-    </div>
 
 
     <div class="setting-label">
