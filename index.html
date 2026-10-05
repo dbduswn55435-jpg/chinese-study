@@ -777,6 +777,197 @@
     }
 
 
+
+    /* =========================================
+       단어 설명 / 한자 쓰기 탭
+    ========================================= */
+
+    .analysis-tabs {
+      margin: 18px 0 14px;
+      padding: 4px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      border-radius: 14px;
+      background: #f1f1f5;
+    }
+
+    .analysis-tab {
+      padding: 10px 8px;
+      border: 0;
+      border-radius: 11px;
+      background: transparent;
+      font-weight: 850;
+      color: var(--subtext);
+    }
+
+    .analysis-tab.active {
+      background: white;
+      color: var(--text);
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+
+    .hanzi-picker {
+      margin: 3px 0 15px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hanzi-pick {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: white;
+      font-size: 23px;
+      font-weight: 850;
+    }
+
+    .hanzi-pick.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .hanzi-practice-title {
+      margin: 0 0 9px;
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--subtext);
+    }
+
+    .hanzi-practice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .hanzi-practice-column {
+      min-width: 0;
+    }
+
+    .hanzi-square {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border: 2px solid #d95b5b;
+      background: white;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .hanzi-square::before,
+    .hanzi-square::after {
+      content: "";
+      position: absolute;
+      z-index: 3;
+      pointer-events: none;
+      background: rgba(217,91,91,.55);
+    }
+
+    .hanzi-square::before {
+      left: 50%;
+      top: 0;
+      width: 1px;
+      height: 100%;
+    }
+
+    .hanzi-square::after {
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+    }
+
+    .hanzi-diagonal-a,
+    .hanzi-diagonal-b {
+      position: absolute;
+      z-index: 3;
+      left: -21%;
+      top: 50%;
+      width: 142%;
+      height: 1px;
+      pointer-events: none;
+      background: rgba(217,91,91,.35);
+      transform-origin: center;
+    }
+
+    .hanzi-diagonal-a { transform: rotate(45deg); }
+    .hanzi-diagonal-b { transform: rotate(-45deg); }
+
+    #strokeSvg,
+    #writingCanvas {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .stroke-help {
+      margin-top: 8px;
+      min-height: 34px;
+      color: var(--subtext);
+      font-size: 12px;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .writing-tools {
+      margin: 0 0 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .writing-tool {
+      padding: 7px 9px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .writing-tool.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .hanzi-reset {
+      width: 100%;
+      margin-top: 10px;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 11px;
+      background: #f1f1f5;
+      font-weight: 800;
+    }
+
+    .hanzi-data-error {
+      padding: 25px 10px;
+      color: var(--subtext);
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    @media (max-width: 430px) {
+      .hanzi-practice-grid {
+        gap: 8px;
+      }
+
+      .writing-tool {
+        padding: 6px 7px;
+        font-size: 11px;
+      }
+    }
+
     /* =========================================
        설정창
     ========================================= */
@@ -1291,7 +1482,34 @@
     </div>
 
 
-    <div id="analysisContent"></div>
+    <div class="analysis-tabs">
+      <button
+        id="analysisInfoTab"
+        class="analysis-tab active"
+        type="button"
+        onclick="showAnalysisTab('info')"
+      >
+        단어 설명
+      </button>
+
+      <button
+        id="analysisWriteTab"
+        class="analysis-tab"
+        type="button"
+        onclick="showAnalysisTab('write')"
+      >
+        ✍️ 한자 쓰기
+      </button>
+    </div>
+
+    <div id="analysisInfoPane">
+      <div id="analysisContent"></div>
+    </div>
+
+    <div
+      id="analysisWritePane"
+      class="hidden"
+    ></div>
 
   </div>
 
@@ -3276,6 +3494,16 @@ async function selectWord(
     word;
 
 
+  practiceCharacter =
+    "";
+
+  practiceCharacterData =
+    null;
+
+  revealedStrokeCount =
+    0;
+
+
   selectedSentence =
     sentence;
 
@@ -3314,6 +3542,11 @@ async function selectWord(
     )
     .textContent =
       word;
+
+
+  showAnalysisTab(
+    "info"
+  );
 
 
   document
@@ -3404,6 +3637,882 @@ function closeAnalysis() {
     .classList.remove(
       "panel-open"
     );
+
+}
+
+
+
+
+/* ==========================================================
+   한자 쓰기 연습
+========================================================== */
+
+let practiceCharacter = "";
+let practiceCharacterData = null;
+let revealedStrokeCount = 0;
+let writingMode = "pen";
+let writingCanvasReady = false;
+let writingDrawing = false;
+let writingLastPoint = null;
+
+
+function getPracticeCharacters() {
+
+  return [
+    ...String(
+      selectedWord || ""
+    )
+  ].filter(
+    char =>
+      /[\u3400-\u9fff]/.test(
+        char
+      )
+  );
+
+}
+
+
+function showAnalysisTab(
+  tab
+) {
+
+  const infoPane =
+    document.getElementById(
+      "analysisInfoPane"
+    );
+
+  const writePane =
+    document.getElementById(
+      "analysisWritePane"
+    );
+
+  const infoTab =
+    document.getElementById(
+      "analysisInfoTab"
+    );
+
+  const writeTab =
+    document.getElementById(
+      "analysisWriteTab"
+    );
+
+
+  if (
+    !infoPane ||
+    !writePane ||
+    !infoTab ||
+    !writeTab
+  ) {
+    return;
+  }
+
+
+  const writing =
+    tab === "write";
+
+
+  infoPane.classList.toggle(
+    "hidden",
+    writing
+  );
+
+  writePane.classList.toggle(
+    "hidden",
+    !writing
+  );
+
+  infoTab.classList.toggle(
+    "active",
+    !writing
+  );
+
+  writeTab.classList.toggle(
+    "active",
+    writing
+  );
+
+
+  if (writing) {
+    renderWritingPane();
+  }
+
+}
+
+
+function practiceSquareLines() {
+
+  return `
+    <span class="hanzi-diagonal-a"></span>
+    <span class="hanzi-diagonal-b"></span>
+  `;
+
+}
+
+
+function renderWritingPane() {
+
+  const pane =
+    document.getElementById(
+      "analysisWritePane"
+    );
+
+  if (!pane) {
+    return;
+  }
+
+
+  const characters =
+    getPracticeCharacters();
+
+
+  if (!characters.length) {
+
+    pane.innerHTML =
+      `<div class="hanzi-data-error">
+        이 단어에는 연습할 한자가 없어요.
+      </div>`;
+
+    return;
+
+  }
+
+
+  if (
+    !practiceCharacter ||
+    !characters.includes(
+      practiceCharacter
+    )
+  ) {
+
+    practiceCharacter =
+      characters[0];
+
+    practiceCharacterData =
+      null;
+
+    revealedStrokeCount =
+      0;
+
+  }
+
+
+  pane.innerHTML = `
+    <div class="hanzi-picker">
+      ${
+        characters
+          .map(
+            char => `
+              <button
+                type="button"
+                class="hanzi-pick ${
+                  char === practiceCharacter
+                    ? "active"
+                    : ""
+                }"
+                onclick="choosePracticeCharacter('${char}')"
+              >
+                ${char}
+              </button>
+            `
+          )
+          .join("")
+      }
+    </div>
+
+    <div class="hanzi-practice-grid">
+
+      <div class="hanzi-practice-column">
+
+        <div class="hanzi-practice-title">
+          획순 보기
+        </div>
+
+        <div
+          id="strokeSquare"
+          class="hanzi-square"
+          onclick="revealNextStroke()"
+        >
+          ${practiceSquareLines()}
+
+          <svg
+            id="strokeSvg"
+            viewBox="0 0 1024 1024"
+            aria-label="한자 획순"
+          ></svg>
+        </div>
+
+        <div
+          id="strokeHelp"
+          class="stroke-help"
+        >
+          불러오는 중…
+        </div>
+
+        <button
+          type="button"
+          class="hanzi-reset"
+          onclick="resetStrokePractice()"
+        >
+          ↺ 획순 처음부터
+        </button>
+
+      </div>
+
+
+      <div class="hanzi-practice-column">
+
+        <div class="hanzi-practice-title">
+          따라 쓰기
+        </div>
+
+        <div class="writing-tools">
+
+          <button
+            id="penTool"
+            type="button"
+            class="writing-tool active"
+            onclick="setWritingMode('pen')"
+          >
+            ✏️ 펜
+          </button>
+
+          <button
+            id="eraserTool"
+            type="button"
+            class="writing-tool"
+            onclick="setWritingMode('eraser')"
+          >
+            지우개
+          </button>
+
+          <button
+            type="button"
+            class="writing-tool"
+            onclick="clearWritingCanvas()"
+          >
+            전체 지우기
+          </button>
+
+        </div>
+
+        <div class="hanzi-square">
+          ${practiceSquareLines()}
+
+          <canvas
+            id="writingCanvas"
+          ></canvas>
+        </div>
+
+        <div class="stroke-help">
+          손가락이나 Apple Pencil로 자유롭게 써보세요.
+        </div>
+
+      </div>
+
+    </div>
+  `;
+
+
+  setupWritingCanvas();
+
+  loadPracticeCharacter(
+    practiceCharacter
+  );
+
+}
+
+
+function choosePracticeCharacter(
+  char
+) {
+
+  practiceCharacter =
+    char;
+
+  practiceCharacterData =
+    null;
+
+  revealedStrokeCount =
+    0;
+
+
+  renderWritingPane();
+
+}
+
+
+async function loadPracticeCharacter(
+  char
+) {
+
+  const help =
+    document.getElementById(
+      "strokeHelp"
+    );
+
+
+  try {
+
+    const response =
+      await fetch(
+        `https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${encodeURIComponent(char)}.json`
+      );
+
+
+    if (!response.ok) {
+      throw new Error(
+        "획순 데이터를 찾지 못했습니다."
+      );
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      practiceCharacter !==
+      char
+    ) {
+      return;
+    }
+
+
+    practiceCharacterData =
+      data;
+
+    revealedStrokeCount =
+      0;
+
+
+    drawPracticeCharacter();
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    const svg =
+      document.getElementById(
+        "strokeSvg"
+      );
+
+
+    if (svg) {
+      svg.innerHTML = "";
+    }
+
+
+    if (help) {
+
+      help.textContent =
+        "이 한자의 획순 데이터를 불러오지 못했어요.";
+
+    }
+
+  }
+
+}
+
+
+function drawPracticeCharacter() {
+
+  const svg =
+    document.getElementById(
+      "strokeSvg"
+    );
+
+  const help =
+    document.getElementById(
+      "strokeHelp"
+    );
+
+
+  if (
+    !svg ||
+    !practiceCharacterData
+  ) {
+    return;
+  }
+
+
+  const strokes =
+    Array.isArray(
+      practiceCharacterData.strokes
+    )
+      ? practiceCharacterData.strokes
+      : [];
+
+  const medians =
+    Array.isArray(
+      practiceCharacterData.medians
+    )
+      ? practiceCharacterData.medians
+      : [];
+
+
+  const outline =
+    strokes
+      .map(
+        path => `
+          <path
+            d="${path}"
+            fill="#d9d9df"
+          ></path>
+        `
+      )
+      .join("");
+
+
+  const revealed =
+    strokes
+      .slice(
+        0,
+        revealedStrokeCount
+      )
+      .map(
+        path => `
+          <path
+            d="${path}"
+            fill="#17171c"
+          ></path>
+        `
+      )
+      .join("");
+
+
+  const numbers =
+    medians
+      .slice(
+        0,
+        revealedStrokeCount
+      )
+      .map(
+        (median,index) => {
+
+          const point =
+            Array.isArray(median)
+              ? median[0]
+              : null;
+
+
+          if (
+            !Array.isArray(point)
+          ) {
+            return "";
+          }
+
+
+          const x =
+            Number(point[0]) || 0;
+
+          const y =
+            900 -
+            (Number(point[1]) || 0);
+
+
+          return `
+            <g>
+              <circle
+                cx="${x}"
+                cy="${y}"
+                r="30"
+                fill="white"
+                stroke="#17171c"
+                stroke-width="5"
+              ></circle>
+
+              <text
+                x="${x}"
+                y="${y + 11}"
+                text-anchor="middle"
+                font-size="34"
+                font-weight="800"
+                fill="#17171c"
+              >
+                ${index + 1}
+              </text>
+            </g>
+          `;
+
+        }
+      )
+      .join("");
+
+
+  svg.innerHTML = `
+    <g
+      transform="translate(0,900) scale(1,-1)"
+    >
+      ${outline}
+      ${revealed}
+    </g>
+
+    ${numbers}
+  `;
+
+
+  if (help) {
+
+    help.textContent =
+      revealedStrokeCount >=
+      strokes.length
+
+        ? `완성! 총 ${strokes.length}획`
+
+        : `칸을 누르면 ${
+            revealedStrokeCount + 1
+          }획이 표시돼요.`;
+
+  }
+
+}
+
+
+function revealNextStroke() {
+
+  if (
+    !practiceCharacterData
+  ) {
+    return;
+  }
+
+
+  const total =
+    practiceCharacterData
+      .strokes
+      ?.length || 0;
+
+
+  if (
+    revealedStrokeCount <
+    total
+  ) {
+
+    revealedStrokeCount +=
+      1;
+
+    drawPracticeCharacter();
+
+  }
+
+}
+
+
+function resetStrokePractice() {
+
+  revealedStrokeCount =
+    0;
+
+  drawPracticeCharacter();
+
+}
+
+
+function setWritingMode(
+  mode
+) {
+
+  writingMode =
+    mode;
+
+
+  document
+    .getElementById(
+      "penTool"
+    )
+    ?.classList.toggle(
+      "active",
+      mode === "pen"
+    );
+
+
+  document
+    .getElementById(
+      "eraserTool"
+    )
+    ?.classList.toggle(
+      "active",
+      mode === "eraser"
+    );
+
+}
+
+
+function setupWritingCanvas() {
+
+  const canvas =
+    document.getElementById(
+      "writingCanvas"
+    );
+
+
+  if (!canvas) {
+    return;
+  }
+
+
+  const resizeCanvas =
+    () => {
+
+      const rect =
+        canvas.getBoundingClientRect();
+
+      const ratio =
+        Math.max(
+          1,
+          window.devicePixelRatio ||
+          1
+        );
+
+
+      canvas.width =
+        Math.round(
+          rect.width *
+          ratio
+        );
+
+      canvas.height =
+        Math.round(
+          rect.height *
+          ratio
+        );
+
+
+      const context =
+        canvas.getContext(
+          "2d"
+        );
+
+
+      context.setTransform(
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+      );
+
+      context.lineCap =
+        "round";
+
+      context.lineJoin =
+        "round";
+
+    };
+
+
+  resizeCanvas();
+
+
+  const pointFromEvent =
+    event => {
+
+      const rect =
+        canvas.getBoundingClientRect();
+
+
+      return {
+        x:
+          event.clientX -
+          rect.left,
+
+        y:
+          event.clientY -
+          rect.top
+      };
+
+    };
+
+
+  const start =
+    event => {
+
+      event.preventDefault();
+
+      writingDrawing =
+        true;
+
+      writingLastPoint =
+        pointFromEvent(
+          event
+        );
+
+
+      try {
+        canvas.setPointerCapture(
+          event.pointerId
+        );
+      } catch (_) {}
+
+    };
+
+
+  const move =
+    event => {
+
+      if (
+        !writingDrawing ||
+        !writingLastPoint
+      ) {
+        return;
+      }
+
+
+      event.preventDefault();
+
+
+      const point =
+        pointFromEvent(
+          event
+        );
+
+      const context =
+        canvas.getContext(
+          "2d"
+        );
+
+
+      context.save();
+
+
+      if (
+        writingMode ===
+        "eraser"
+      ) {
+
+        context.globalCompositeOperation =
+          "destination-out";
+
+        context.lineWidth =
+          24;
+
+      } else {
+
+        context.globalCompositeOperation =
+          "source-over";
+
+        context.strokeStyle =
+          "#17171c";
+
+        context.lineWidth =
+          7;
+
+      }
+
+
+      context.beginPath();
+
+      context.moveTo(
+        writingLastPoint.x,
+        writingLastPoint.y
+      );
+
+      context.lineTo(
+        point.x,
+        point.y
+      );
+
+      context.stroke();
+
+      context.restore();
+
+
+      writingLastPoint =
+        point;
+
+    };
+
+
+  const end =
+    event => {
+
+      writingDrawing =
+        false;
+
+      writingLastPoint =
+        null;
+
+
+      try {
+        canvas.releasePointerCapture(
+          event.pointerId
+        );
+      } catch (_) {}
+
+    };
+
+
+  canvas.addEventListener(
+    "pointerdown",
+    start
+  );
+
+  canvas.addEventListener(
+    "pointermove",
+    move
+  );
+
+  canvas.addEventListener(
+    "pointerup",
+    end
+  );
+
+  canvas.addEventListener(
+    "pointercancel",
+    end
+  );
+
+  canvas.addEventListener(
+    "pointerleave",
+    event => {
+
+      if (
+        event.buttons ===
+        0
+      ) {
+        end(event);
+      }
+
+    }
+  );
+
+
+  writingCanvasReady =
+    true;
+
+}
+
+
+function clearWritingCanvas() {
+
+  const canvas =
+    document.getElementById(
+      "writingCanvas"
+    );
+
+
+  if (!canvas) {
+    return;
+  }
+
+
+  const context =
+    canvas.getContext(
+      "2d"
+    );
+
+
+  context.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
 }
 
