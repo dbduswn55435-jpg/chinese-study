@@ -1175,7 +1175,23 @@
 
     }
 
-  </style>
+  
+/* final usability patch */
+:root{--script-font-size:20px}
+.chinese{font-size:var(--script-font-size)!important;overflow-wrap:anywhere;word-break:break-word}
+.document-toolbar{position:sticky!important;top:var(--toolbar-top,116px);z-index:24;margin:-18px -18px 0;padding:12px 18px 9px!important;background:rgba(247,247,251,.96);backdrop-filter:blur(14px)}
+.document-rename-input{width:150px;padding:9px 12px;border:2px solid var(--accent);border-radius:15px;font:inherit;font-weight:800;outline:none}
+.audio-rate-picker{display:inline-flex;gap:5px;margin-left:6px}
+.audio-rate-choice{padding:6px 8px;border:1px solid var(--border);border-radius:10px;background:white;font-size:11px;font-weight:800}
+.audio-rate-choice.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
+.font-size-options{display:flex;gap:8px}.font-size-button{flex:1;padding:11px 7px;border:0;border-radius:13px;background:#f1f1f5;font-weight:800}.font-size-button.active{background:var(--accent);color:white}
+.hanzi-pick{padding:0!important;display:inline-flex!important;align-items:center;justify-content:center;text-align:center;line-height:1}
+.hanzi-practice-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:start!important}
+.hanzi-practice-title{min-height:20px}.writing-tools{min-height:50px;align-content:flex-start}
+.hanzi-practice-column:first-child .hanzi-practice-title{margin-bottom:67px}
+@media(max-width:430px){.hanzi-practice-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}}
+
+</style>
 </head>
 
 
@@ -3651,7 +3667,6 @@ let practiceCharacter = "";
 let practiceCharacterData = null;
 let revealedStrokeCount = 0;
 let writingMode = "pen";
-let writingCanvasReady = false;
 let writingDrawing = false;
 let writingLastPoint = null;
 
@@ -4481,9 +4496,6 @@ function setupWritingCanvas() {
     }
   );
 
-
-  writingCanvasReady =
-    true;
 
 }
 
@@ -6715,6 +6727,45 @@ function toast(
     );
 
 }
+
+
+/* final usability patch */
+(()=>{
+const FK=`${LANGUAGE||"zh"}-script-font-size`;
+const top=()=>{const h=document.querySelector(".app-header");if(h)document.documentElement.style.setProperty("--toolbar-top",`${Math.ceil(h.getBoundingClientRect().height)}px`)};
+const level=()=>{const n=+localStorage.getItem(FK)||1;return[1,2,3].includes(n)?n:1};
+const font=n=>{localStorage.setItem(FK,n);document.documentElement.style.setProperty("--script-font-size",({1:"20px",2:"24px",3:"28px"})[n]);[1,2,3].forEach(x=>document.getElementById(`fs${x}`)?.classList.toggle("active",x==n))};
+function settings(){
+ const m=document.querySelector("#settingsModal .modal-box");if(!m||document.getElementById("fs1"))return;
+ const l=m.querySelector(".setting-label"),w=document.createElement("div");
+ w.innerHTML=`<div class="setting-label">대본 글자 크기</div><div class="font-size-options"><button id="fs1" class="font-size-button">기본</button><button id="fs2" class="font-size-button">크게</button><button id="fs3" class="font-size-button">더 크게</button></div>`;l.before(w);
+ [1,2,3].forEach(n=>document.getElementById(`fs${n}`).onclick=()=>{font(n);toast(n==1?"대본 글자 크기를 기본으로 설정했어요.":n==2?"대본 글자를 크게 설정했어요.":"대본 글자를 더 크게 설정했어요.")});
+ const r=document.getElementById("rate07");if(r&&!document.getElementById("rate05x")){const b=document.createElement("button");b.id="rate05x";b.className="rate-button";b.textContent="0.5×";b.onclick=()=>setSpeechRate(.5);r.before(b)}font(level())
+}
+const closeRates=()=>document.querySelectorAll(".audio-rate-picker").forEach(x=>x.remove());
+function rates(btn,text){
+ if(btn.nextElementSibling?.classList.contains("audio-rate-picker")){btn.nextElementSibling.remove();return}
+ closeRates();const p=document.createElement("span");p.className="audio-rate-picker";
+ [.5,.7,1].forEach(r=>{const b=document.createElement("button");b.type="button";b.className="audio-rate-choice"+(speechRate===r?" active":"");b.textContent=`${r}×`;b.onclick=async e=>{e.stopPropagation();speechRate=r;try{await saveSettings()}catch(_){}closeRates();speakChinese(text)};p.appendChild(b)});btn.after(p)
+}
+function listenText(b){
+ const t=(b.textContent||"").trim();
+ if(t.includes("문장 듣기"))return b.closest(".script-row")?.querySelector(".chinese")?.textContent?.trim()||"";
+ if(t.includes("단어 듣기")&&selectedWord)return selectedWord;
+ if(t.startsWith("🔊 듣기"))return b.closest(".vocab-card")?.querySelector(".vocab-word")?.textContent?.trim()||"";
+ return""
+}
+async function rename(b){
+ const label=(b.textContent||"").trim(),d=documents.find(x=>cleanFileName(x.file_name)===label);if(!d)return;
+ const i=document.createElement("input");i.className="document-rename-input";i.value=cleanFileName(d.file_name);b.replaceWith(i);i.focus();i.select();let done=false;
+ const finish=async save=>{if(done)return;done=true;const n=i.value.trim();if(save&&n&&n!==cleanFileName(d.file_name)){const m=String(d.file_name||"").match(/(\.[^.]+)$/),e=m?m[1]:"",name=e&&!n.toLowerCase().endsWith(e.toLowerCase())?n+e:n;const{error}=await sb.from("study_documents").update({file_name:name}).eq("id",d.id).eq("user_id",currentUser.id).eq("language",LANGUAGE);if(error)toast("파일 이름을 바꾸지 못했어요.");else{d.file_name=name;toast("파일 이름을 바꿨어요.")}}renderDocumentTabs();renderCurrentDocument()};
+ i.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();finish(true)}else if(e.key==="Escape"){e.preventDefault();finish(false)}};i.onblur=()=>finish(true)
+}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const t=(b.textContent||"").trim(),ok=t.includes("문장 듣기")||t.includes("단어 듣기")||t.startsWith("🔊 듣기");if(!ok)return;const x=listenText(b);if(!x)return;e.preventDefault();e.stopImmediatePropagation();rates(b,x)},true);
+document.addEventListener("dblclick",e=>{const b=e.target.closest(".document-tab");if(!b)return;e.preventDefault();e.stopImmediatePropagation();rename(b)},true);
+window.addEventListener("resize",top);window.addEventListener("load",()=>{top();settings();font(level())});
+const old=window.openSettings;window.openSettings=function(...a){settings();font(level());return old.apply(this,a)}
+})();
 
 </script>
 
