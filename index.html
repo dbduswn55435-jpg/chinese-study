@@ -308,12 +308,20 @@
     ========================================= */
 
     .document-toolbar {
+      position: sticky;
+      top: 116px;
+      z-index: 24;
+
       display: flex;
       gap: 9px;
-
       overflow-x: auto;
 
-      padding-bottom: 7px;
+      margin: -18px -18px 0;
+      padding: 12px 18px 9px;
+
+      background: rgba(247, 247, 251, .96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
 
       scrollbar-width: none;
     }
@@ -361,6 +369,22 @@
       color: var(--accent);
 
       font-weight: 850;
+    }
+
+    .document-rename-input {
+      flex: 0 0 auto;
+      width: 150px;
+      padding: 9px 12px;
+
+      border: 2px solid var(--accent);
+      border-radius: 15px;
+
+      background: white;
+      color: var(--text);
+
+      font: inherit;
+      font-weight: 800;
+      outline: none;
     }
 
 
@@ -475,7 +499,7 @@
     .chinese {
       flex: 1;
 
-      font-size: 20px;
+      font-size: var(--script-font-size, 20px);
       line-height: 1.8;
 
       letter-spacing: .15px;
@@ -817,11 +841,20 @@
     .hanzi-pick {
       width: 44px;
       height: 44px;
+      padding: 0;
+
       border: 1px solid var(--border);
       border-radius: 12px;
       background: white;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
       font-size: 23px;
       font-weight: 850;
+      line-height: 1;
+      text-align: center;
     }
 
     .hanzi-pick.active {
@@ -831,7 +864,10 @@
     }
 
     .hanzi-practice-title {
+      grid-row: 1;
+
       margin: 0 0 9px;
+
       font-size: 13px;
       font-weight: 850;
       color: var(--subtext);
@@ -839,13 +875,33 @@
 
     .hanzi-practice-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 12px;
       align-items: start;
     }
 
     .hanzi-practice-column {
       min-width: 0;
+
+      display: grid;
+      grid-template-rows:
+        auto
+        48px
+        auto
+        auto
+        auto;
+    }
+
+    .hanzi-practice-column > .hanzi-square {
+      grid-row: 3;
+    }
+
+    .hanzi-practice-column > .stroke-help {
+      grid-row: 4;
+    }
+
+    .hanzi-practice-column > .hanzi-reset {
+      grid-row: 5;
     }
 
     .hanzi-square {
@@ -918,19 +974,33 @@
     }
 
     .writing-tools {
+      grid-row: 2;
+
       margin: 0 0 8px;
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 5px;
+
+      min-height: 40px;
+    }
+
+    .hanzi-toolbar-spacer {
+      visibility: hidden;
     }
 
     .writing-tool {
-      padding: 7px 9px;
+      width: 100%;
+      min-width: 0;
+      padding: 7px 3px;
+
       border: 1px solid var(--border);
       border-radius: 10px;
       background: white;
-      font-size: 12px;
+
+      font-size: 11px;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     .writing-tool.active {
@@ -959,13 +1029,67 @@
 
     @media (max-width: 430px) {
       .hanzi-practice-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         gap: 8px;
       }
 
       .writing-tool {
-        padding: 6px 7px;
-        font-size: 11px;
+        padding: 6px 2px;
+        font-size: 10px;
       }
+    }
+
+
+    .settings-top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .font-size-options {
+      display: flex;
+      gap: 6px;
+    }
+
+    .font-size-button {
+      flex: 1;
+      padding: 10px 5px;
+
+      border: 0;
+      border-radius: 12px;
+
+      background: #f1f1f5;
+
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .font-size-button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .audio-rate-picker {
+      display: flex;
+      gap: 6px;
+
+      width: max-content;
+      margin-top: 7px;
+    }
+
+    .audio-rate-choice {
+      min-width: 46px;
+      padding: 7px 9px;
+
+      border: 1px solid var(--border);
+      border-radius: 10px;
+
+      background: white;
+      color: var(--text);
+
+      font-size: 12px;
+      font-weight: 850;
     }
 
     /* =========================================
@@ -1176,22 +1300,7 @@
     }
 
   
-/* final usability patch */
-:root{--script-font-size:20px}
-.chinese{font-size:var(--script-font-size)!important;overflow-wrap:anywhere;word-break:break-word}
-.document-toolbar{position:sticky!important;top:var(--toolbar-top,116px);z-index:24;margin:-18px -18px 0;padding:12px 18px 9px!important;background:rgba(247,247,251,.96);backdrop-filter:blur(14px)}
-.document-rename-input{width:150px;padding:9px 12px;border:2px solid var(--accent);border-radius:15px;font:inherit;font-weight:800;outline:none}
-.audio-rate-picker{display:inline-flex;gap:5px;margin-left:6px}
-.audio-rate-choice{padding:6px 8px;border:1px solid var(--border);border-radius:10px;background:white;font-size:11px;font-weight:800}
-.audio-rate-choice.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
-.font-size-options{display:flex;gap:8px}.font-size-button{flex:1;padding:11px 7px;border:0;border-radius:13px;background:#f1f1f5;font-weight:800}.font-size-button.active{background:var(--accent);color:white}
-.hanzi-pick{padding:0!important;display:inline-flex!important;align-items:center;justify-content:center;text-align:center;line-height:1}
-.hanzi-practice-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:start!important}
-.hanzi-practice-title{min-height:20px}.writing-tools{min-height:50px;align-content:flex-start}
-.hanzi-practice-column:first-child .hanzi-practice-title{margin-bottom:67px}
-@media(max-width:430px){.hanzi-practice-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}}
 
-</style>
 </head>
 
 
@@ -1553,12 +1662,27 @@
     </div>
 
 
-    <div class="setting-label">
-      테마 색상
-    </div>
+    <div class="settings-top-row">
+
+      <div>
+        <div class="setting-label">
+          글자 크기
+        </div>
+
+        <div class="font-size-options">
+          <button id="fontSize1" class="font-size-button" type="button" onclick="setScriptFontSize(1)">기본</button>
+          <button id="fontSize2" class="font-size-button" type="button" onclick="setScriptFontSize(2)">크게</button>
+          <button id="fontSize3" class="font-size-button" type="button" onclick="setScriptFontSize(3)">더 크게</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="setting-label">
+          테마 색상
+        </div>
 
 
-    <div class="theme-options">
+        <div class="theme-options">
 
       <button
         class="theme-dot"
@@ -1595,6 +1719,9 @@
         title="베이지"
       ></button>
 
+        </div>
+      </div>
+
     </div>
 
 
@@ -1609,32 +1736,6 @@
       value="#8b7cf6"
       onchange="setTheme(this.value)"
     >
-
-
-    <div class="setting-label">
-      중국어 음성 속도
-    </div>
-
-
-    <div class="rate-options">
-
-      <button
-        id="rate07"
-        class="rate-button"
-        onclick="setSpeechRate(0.7)"
-      >
-        0.7× 천천히
-      </button>
-
-      <button
-        id="rate10"
-        class="rate-button active"
-        onclick="setSpeechRate(1)"
-      >
-        1× 보통
-      </button>
-
-    </div>
 
 
     <button
@@ -1707,7 +1808,12 @@ let selectedSentence = null;
 let selectedDocument = null;
 
 
-let speechRate = 1;
+let scriptFontSize =
+  Number(
+    localStorage.getItem(
+      `${LANGUAGE}-script-font-size`
+    )
+  ) || 1;
 
 let themeColor =
   "#8b7cf6";
@@ -2351,18 +2457,6 @@ async function loadMyData() {
       }
 
 
-      if (
-        settings.speech_rate
-      ) {
-
-        speechRate =
-          Number(
-            settings.speech_rate
-          );
-
-      }
-
-
     } else {
 
       const {
@@ -2381,10 +2475,7 @@ async function loadMyData() {
               LANGUAGE,
 
             theme_color:
-              themeColor,
-
-            speech_rate:
-              speechRate
+              themeColor
 
           });
 
@@ -2989,7 +3080,41 @@ function renderDocumentTabs() {
 
 
     button.onclick =
-      () => {
+      event => {
+
+        event.stopPropagation();
+
+
+        const now =
+          Date.now();
+
+        const previousTap =
+          Number(
+            doc._lastTabTap || 0
+          );
+
+
+        if (
+          now - previousTap <
+          450
+        ) {
+
+          doc._lastTabTap =
+            0;
+
+          startDocumentRename(
+            doc,
+            button
+          );
+
+          return;
+
+        }
+
+
+        doc._lastTabTap =
+          now;
+
 
         activeDocumentId =
           doc.id;
@@ -3002,6 +3127,20 @@ function renderDocumentTabs() {
       };
 
 
+    button.ondblclick =
+      event => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        startDocumentRename(
+          doc,
+          button
+        );
+
+      };
+
+
     container.appendChild(
       button
     );
@@ -3010,6 +3149,180 @@ function renderDocumentTabs() {
 
 }
 
+
+
+
+async function startDocumentRename(
+  doc,
+  button
+) {
+
+  const input =
+    document.createElement(
+      "input"
+    );
+
+  input.className =
+    "document-rename-input";
+
+  input.value =
+    cleanFileName(
+      doc.file_name
+    );
+
+
+  button.replaceWith(
+    input
+  );
+
+  input.focus();
+  input.select();
+
+
+  let finished =
+    false;
+
+
+  const finish =
+    async save => {
+
+      if (finished) {
+        return;
+      }
+
+      finished =
+        true;
+
+
+      const newLabel =
+        input.value.trim();
+
+
+      if (
+        save &&
+        newLabel &&
+        newLabel !==
+          cleanFileName(
+            doc.file_name
+          )
+      ) {
+
+        const match =
+          String(
+            doc.file_name || ""
+          ).match(
+            /(\.[^.]+)$/
+          );
+
+        const extension =
+          match
+            ? match[1]
+            : "";
+
+        const newFileName =
+          extension &&
+          !newLabel
+            .toLowerCase()
+            .endsWith(
+              extension.toLowerCase()
+            )
+            ? newLabel +
+              extension
+            : newLabel;
+
+
+        const {
+          error
+        } =
+          await sb
+            .from(
+              "study_documents"
+            )
+            .update({
+              file_name:
+                newFileName
+            })
+            .eq(
+              "id",
+              doc.id
+            )
+            .eq(
+              "user_id",
+              currentUser.id
+            )
+            .eq(
+              "language",
+              LANGUAGE
+            );
+
+
+        if (error) {
+
+          console.error(
+            error
+          );
+
+          toast(
+            "파일 이름을 바꾸지 못했어요."
+          );
+
+        } else {
+
+          doc.file_name =
+            newFileName;
+
+          toast(
+            "파일 이름을 바꿨어요."
+          );
+
+        }
+
+      }
+
+
+      renderDocumentTabs();
+      renderCurrentDocument();
+
+    };
+
+
+  input.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key ===
+        "Enter"
+      ) {
+
+        event.preventDefault();
+
+        finish(true);
+
+      } else if (
+        event.key ===
+        "Escape"
+      ) {
+
+        event.preventDefault();
+
+        finish(false);
+
+      }
+
+    }
+  );
+
+
+  input.addEventListener(
+    "blur",
+    () => finish(true),
+    {
+      once: true
+    }
+  );
+
+}
 
 
 /* ==========================================================
@@ -3175,7 +3488,8 @@ function renderCurrentDocument() {
 
           event.stopPropagation();
 
-          speakChinese(
+          showSpeechRateChoices(
+            audio,
             row.chinese
           );
 
@@ -3840,6 +4154,10 @@ function renderWritingPane() {
 
         <div class="hanzi-practice-title">
           획순 보기
+        </div>
+
+        <div class="writing-tools hanzi-toolbar-spacer" aria-hidden="true">
+          <span></span>
         </div>
 
         <div
@@ -4739,13 +5057,16 @@ function renderAnalysis(
 
 
   audioButton.textContent =
-    `🔊 단어 듣기 ${speechRate === 0.7 ? "0.7×" : "1×"}`;
+    "🔊 단어 듣기";
 
 
   audioButton.onclick =
-    () => {
+    event => {
 
-      speakChinese(
+      event.stopPropagation();
+
+      showSpeechRateChoices(
+        audioButton,
         selectedWord
       );
 
@@ -5830,17 +6151,15 @@ function renderVocabulary() {
 
 
         audio.textContent =
-          `🔊 듣기 ${
-            speechRate === 0.7
-              ? "0.7×"
-              : "1×"
-          }`;
-
+          "🔊 단어 듣기";
 
         audio.onclick =
-          () => {
+          event => {
 
-            speakChinese(
+            event.stopPropagation();
+
+            showSpeechRateChoices(
+              audio,
               item.word
             );
 
@@ -6200,8 +6519,111 @@ async function prefetchDocument(doc) {
    25. 중국어 음성
 ========================================================== */
 
-function speakChinese(
+
+function closeSpeechRateChoices() {
+
+  document
+    .querySelectorAll(
+      ".audio-rate-picker"
+    )
+    .forEach(
+      picker =>
+        picker.remove()
+    );
+
+}
+
+
+
+function showSpeechRateChoices(
+  button,
   text
+) {
+
+  const currentPicker =
+    button.nextElementSibling;
+
+
+  if (
+    currentPicker &&
+    currentPicker.classList.contains(
+      "audio-rate-picker"
+    )
+  ) {
+
+    currentPicker.remove();
+
+    return;
+
+  }
+
+
+  closeSpeechRateChoices();
+
+
+  const picker =
+    document.createElement(
+      "span"
+    );
+
+  picker.className =
+    "audio-rate-picker";
+
+
+  [0.5, 0.7, 1].forEach(
+    rate => {
+
+      const choice =
+        document.createElement(
+          "button"
+        );
+
+      choice.type =
+        "button";
+
+      choice.className =
+        "audio-rate-choice";
+
+      choice.textContent =
+        `${rate}×`;
+
+
+      choice.onclick =
+        event => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+          closeSpeechRateChoices();
+
+          speakChinese(
+            text,
+            rate
+          );
+
+        };
+
+
+      picker.appendChild(
+        choice
+      );
+
+    }
+  );
+
+
+  button.insertAdjacentElement(
+    "afterend",
+    picker
+  );
+
+}
+
+
+
+function speakChinese(
+  text,
+  rate = 1
 ) {
 
   if (
@@ -6237,7 +6659,7 @@ function speakChinese(
 
 
   utterance.rate =
-    speechRate;
+    Number(rate) || 1;
 
 
   const voices =
@@ -6294,6 +6716,10 @@ function openSettings() {
 
   updateSettingsUI();
 
+  applyScriptFontSize(
+    scriptFontSize
+  );
+
 
   document
     .getElementById(
@@ -6332,6 +6758,69 @@ function closeSettings(
 
 }
 
+
+
+
+function applyScriptFontSize(
+  size
+) {
+
+  const sizes = {
+    1: "20px",
+    2: "24px",
+    3: "28px"
+  };
+
+
+  document
+    .documentElement
+    .style
+    .setProperty(
+      "--script-font-size",
+      sizes[size] ||
+      sizes[1]
+    );
+
+
+  [1, 2, 3].forEach(
+    number => {
+
+      document
+        .getElementById(
+          `fontSize${number}`
+        )
+        ?.classList.toggle(
+          "active",
+          number === size
+        );
+
+    }
+  );
+
+}
+
+
+function setScriptFontSize(
+  size
+) {
+
+  scriptFontSize =
+    Number(size) || 1;
+
+
+  localStorage.setItem(
+    `${LANGUAGE}-script-font-size`,
+    String(
+      scriptFontSize
+    )
+  );
+
+
+  applyScriptFontSize(
+    scriptFontSize
+  );
+
+}
 
 
 /* ==========================================================
@@ -6405,73 +6894,10 @@ function applyTheme(
 
 
 
-/* ==========================================================
-   28. 음성 속도
-========================================================== */
-
-async function setSpeechRate(
-  rate
-) {
-
-  speechRate =
-    Number(rate);
-
-
-  updateSettingsUI();
-
-
-  await saveSettings();
-
-
-  /* 현재 열려 있는 대본/단어장 버튼도 갱신 */
-  renderCurrentDocument();
-
-  renderVocabulary();
-
-
-  toast(
-    speechRate === 0.7
-      ? "음성을 0.7×로 설정했어요."
-      : "음성을 1×로 설정했어요."
-  );
-
-}
-
-
-
 function updateSettingsUI() {
 
-  const slow =
-    document.getElementById(
-      "rate07"
-    );
-
-
-  const normal =
-    document.getElementById(
-      "rate10"
-    );
-
-
-  if (
-    !slow ||
-    !normal
-  ) {
-
-    return;
-
-  }
-
-
-  slow.classList.toggle(
-    "active",
-    speechRate === 0.7
-  );
-
-
-  normal.classList.toggle(
-    "active",
-    speechRate !== 0.7
+  applyScriptFontSize(
+    scriptFontSize
   );
 
 
@@ -6498,7 +6924,7 @@ function updateSettingsUI() {
 
 
 /* ==========================================================
-   29. 설정 Supabase 저장
+   28. 설정 Supabase 저장
 ========================================================== */
 
 async function saveSettings() {
@@ -6530,9 +6956,6 @@ async function saveSettings() {
 
           theme_color:
             themeColor,
-
-          speech_rate:
-            speechRate,
 
           updated_at:
             new Date()
@@ -6729,43 +7152,19 @@ function toast(
 }
 
 
-/* final usability patch */
-(()=>{
-const FK=`${LANGUAGE||"zh"}-script-font-size`;
-const top=()=>{const h=document.querySelector(".app-header");if(h)document.documentElement.style.setProperty("--toolbar-top",`${Math.ceil(h.getBoundingClientRect().height)}px`)};
-const level=()=>{const n=+localStorage.getItem(FK)||1;return[1,2,3].includes(n)?n:1};
-const font=n=>{localStorage.setItem(FK,n);document.documentElement.style.setProperty("--script-font-size",({1:"20px",2:"24px",3:"28px"})[n]);[1,2,3].forEach(x=>document.getElementById(`fs${x}`)?.classList.toggle("active",x==n))};
-function settings(){
- const m=document.querySelector("#settingsModal .modal-box");if(!m||document.getElementById("fs1"))return;
- const l=m.querySelector(".setting-label"),w=document.createElement("div");
- w.innerHTML=`<div class="setting-label">대본 글자 크기</div><div class="font-size-options"><button id="fs1" class="font-size-button">기본</button><button id="fs2" class="font-size-button">크게</button><button id="fs3" class="font-size-button">더 크게</button></div>`;l.before(w);
- [1,2,3].forEach(n=>document.getElementById(`fs${n}`).onclick=()=>{font(n);toast(n==1?"대본 글자 크기를 기본으로 설정했어요.":n==2?"대본 글자를 크게 설정했어요.":"대본 글자를 더 크게 설정했어요.")});
- const r=document.getElementById("rate07");if(r&&!document.getElementById("rate05x")){const b=document.createElement("button");b.id="rate05x";b.className="rate-button";b.textContent="0.5×";b.onclick=()=>setSpeechRate(.5);r.before(b)}font(level())
-}
-const closeRates=()=>document.querySelectorAll(".audio-rate-picker").forEach(x=>x.remove());
-function rates(btn,text){
- if(btn.nextElementSibling?.classList.contains("audio-rate-picker")){btn.nextElementSibling.remove();return}
- closeRates();const p=document.createElement("span");p.className="audio-rate-picker";
- [.5,.7,1].forEach(r=>{const b=document.createElement("button");b.type="button";b.className="audio-rate-choice"+(speechRate===r?" active":"");b.textContent=`${r}×`;b.onclick=async e=>{e.stopPropagation();speechRate=r;try{await saveSettings()}catch(_){}closeRates();speakChinese(text)};p.appendChild(b)});btn.after(p)
-}
-function listenText(b){
- const t=(b.textContent||"").trim();
- if(t.includes("문장 듣기"))return b.closest(".script-row")?.querySelector(".chinese")?.textContent?.trim()||"";
- if(t.includes("단어 듣기")&&selectedWord)return selectedWord;
- if(t.startsWith("🔊 듣기"))return b.closest(".vocab-card")?.querySelector(".vocab-word")?.textContent?.trim()||"";
- return""
-}
-async function rename(b){
- const label=(b.textContent||"").trim(),d=documents.find(x=>cleanFileName(x.file_name)===label);if(!d)return;
- const i=document.createElement("input");i.className="document-rename-input";i.value=cleanFileName(d.file_name);b.replaceWith(i);i.focus();i.select();let done=false;
- const finish=async save=>{if(done)return;done=true;const n=i.value.trim();if(save&&n&&n!==cleanFileName(d.file_name)){const m=String(d.file_name||"").match(/(\.[^.]+)$/),e=m?m[1]:"",name=e&&!n.toLowerCase().endsWith(e.toLowerCase())?n+e:n;const{error}=await sb.from("study_documents").update({file_name:name}).eq("id",d.id).eq("user_id",currentUser.id).eq("language",LANGUAGE);if(error)toast("파일 이름을 바꾸지 못했어요.");else{d.file_name=name;toast("파일 이름을 바꿨어요.")}}renderDocumentTabs();renderCurrentDocument()};
- i.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();finish(true)}else if(e.key==="Escape"){e.preventDefault();finish(false)}};i.onblur=()=>finish(true)
-}
-document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const t=(b.textContent||"").trim(),ok=t.includes("문장 듣기")||t.includes("단어 듣기")||t.startsWith("🔊 듣기");if(!ok)return;const x=listenText(b);if(!x)return;e.preventDefault();e.stopImmediatePropagation();rates(b,x)},true);
-document.addEventListener("dblclick",e=>{const b=e.target.closest(".document-tab");if(!b)return;e.preventDefault();e.stopImmediatePropagation();rename(b)},true);
-window.addEventListener("resize",top);window.addEventListener("load",()=>{top();settings();font(level())});
-const old=window.openSettings;window.openSettings=function(...a){settings();font(level());return old.apply(this,a)}
-})();
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    applyScriptFontSize(
+      scriptFontSize
+    );
+
+  }
+);
+
 
 </script>
 
